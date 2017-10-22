@@ -3,26 +3,37 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.exceptions import ValidationError
+
+
+# Validators
+# See forms.py for password confirmation validator
+def lenLessThanFive(value):
+    if len(value) < 5:
+        raise ValidationError('(!)')
+
+def lenLessThanEight(value):
+    if len(value) < 8:
+        raise ValidationError('(!)')
+
 
 class MemberManager(BaseUserManager):
 
-    def create_member(self, first_name, username, email, password = None):
-        if not email:
-            raise ValueError('You must provide an email address.')
-
+    def create_user(self, username, first_name, email, password = None):
+        
         member = self.model(
-            first_name = first_name,
             username = username,
+            first_name = first_name,
             email = self.normalize_email(email)
         )
         member.set_password(password)
         member.save(using = self._db)
         return member
 
-    def create_admin(self, username, first_name, last_name, email, password = None):
-        member = self.create_member(
-            first_name,
+    def create_superuser(self, username, first_name, email, password = None):
+        member = self.create_user(
             username,
+            first_name,
             email,
             password=password
         )
@@ -32,17 +43,20 @@ class MemberManager(BaseUserManager):
 
 
 class Member(AbstractBaseUser):
-    first_name = models.CharField(max_length=45)
-    last_name = models.CharField(max_length=45, help_text="Optional")
-    username = models.CharField(max_length=45, unique=True)
+    first_name = models.CharField(max_length=45, validators=[lenLessThanFive])
+    last_name = models.CharField(max_length=45)
+    username = models.CharField(max_length=45, unique=True, validators=[lenLessThanFive])
     email = models.EmailField(max_length=45, unique=True)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=100, validators=[lenLessThanEight])
     added = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
     objects = MemberManager()
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'email', 'password']
+    REQUIRED_FIELDS = ['first_name', 'email']
 
     def get_full_name(self):
         return self.first_name, self.last_name
@@ -54,18 +68,11 @@ class Member(AbstractBaseUser):
         return self.username
 
     def has_perm(self, perm, objec=None):
-        "Does the member have a specific permission?"
         return True
 
     def has_module_perms(self, app_label):
-        "Does the member have permissions to view the app `app_label`?"
         return True
 
     @property
     def is_staff(self):
-        "Is the member on staff?"
         return self.is_admin
-
-    # Returns url to access an instance of the model.
-    def get_absolute_url(self):
-        return reverse('view', args=[str(self.id)])

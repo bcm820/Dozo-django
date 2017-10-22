@@ -8,82 +8,72 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Member
 
+# Admin form for creating new members. Includes all required fields
+class SuperMemberCreationForm(forms.ModelForm):
 
-class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    # Create password and confirmation fields to check
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput, help_text="8 characters min.")
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    last_name = forms.CharField(max_length=45, required=False, help_text="Optional")
 
+    # Set meta of form inputs to be Member model
     class Meta:
         model = Member
         fields = '__all__'
-        
-    
-    
-    
-    ##### CONTINUE HERE
 
-
-
-    
-
+    # Check that the two password entries match
     def clean_password2(self):
-        # Check that the two password entries match
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("Your passwords do not match.")
         return password2
 
+    # Save the provided password in hashed format
     def save(self, commit=True):
-        # Save the provided password in hashed format
-        user = super(UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
+        member = super(MemberCreationForm, self).save(commit=False)
+        member.set_password(self.cleaned_data["password1"])
         if commit:
-            user.save()
-        return user
+            member.save()
+        return member
 
 
-class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
-    """
+# Admin form for updating users.  Replaces pw field with admin pw field.
+class SuperMemberChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
+    # Set meta of form inputs to be Member model
     class Meta:
-        model = MyUser
-        fields = ('email', 'password', 'date_of_birth', 'is_active', 'is_admin')
+        model = Member
+        fields = '__all__'
 
+    # Return initial value of password
     def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
         return self.initial["password"]
 
 
-class UserAdmin(BaseUserAdmin):
-    # The forms to add and change user instances
-    form = UserChangeForm
-    add_form = UserCreationForm
+class MemberAdmin(BaseUserAdmin):
 
-    # The fields to be used in displaying the User model.
-    # These override the definitions on the base UserAdmin
-    # that reference specific fields on auth.User.
-    list_display = ('email', 'date_of_birth', 'is_admin')
-    list_filter = ('is_admin',)
+    # The forms to add and change user instances
+    form = SuperMemberChangeForm
+    add_form = SuperMemberCreationForm
+
+    # Displays table of members and fields to filter by
+    list_display = ('username', 'first_name', 'last_name', 'email')
+    list_filter = ('added', 'is_active')
+
+    # How to display the form when changing a member's info
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('date_of_birth',)}),
+        (None, {'fields': ('username',)}),
+        ('Personal', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
+
+    # How to display the form when adding a member
     add_fieldsets = (
         (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2')}
+            'classes': ('wide',), # sets width of field display
+            'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)
@@ -91,7 +81,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 # Now register the new UserAdmin...
-admin.site.register(MyUser, UserAdmin)
+admin.site.register(Member, MemberAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
