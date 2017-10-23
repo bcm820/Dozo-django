@@ -1,6 +1,41 @@
 {% extends "members/base.html" %}
 
 {% block content %}
+
+
+<h2>PROGRESS</h2>
+
+<ul>
+    <li>IFTTT integration SETUP! Time to build out the endpoints (start and end).</li>
+    <li>Assign a unique user_id for them to connect their device to Dozo via IFTTT.</li>
+    <li>Build sessions class as separate app. Build ability to log sessions in person and via assignment.</li>
+    <li>WEDNESDAY: User dashboard. Profile pages. Work on buildling classes and relationships to visualize on the site. Generic views for efficiency!</li>
+    <li>THURSDAY: Efficiency score class? JQuery/Ajax? Bootstrap?</li>
+    <li>IF TIME: Implement flat pages, Django chunks, and change layout.</li>
+    
+    <li>Build Efficiency Score Class</li>
+      <ul>
+        <li>average time spent</li>
+        <li>avg assignments per session</li>
+        <li>assignment difficulty</li>
+      </ul>
+    <li>One to One/Many Relationships</li>
+      <ul>
+        <li>Member and each session</li>
+        <li>Member and each assignment</li>
+        <li>Member and each profile</li>
+        <li>Session and each assignment (when completed)</li>
+        <li>Many members for one cohort</li>
+        <li>Assignment can have many comments</li>
+        <li>Users can have many comments</li>
+      </ul>
+    <li>Many to Many Relationships:</li>
+      <ul>
+        <li>Members share many assignments</li>
+      </ul>
+</ul>
+
+
 <h2>Welcome to <em>Dozo</em></h2>
 
   <p>Welcome to <em>Dozo</em>, a IoT-powered, data-driven productivity, collaboration, and goal targeting tool.</p>
@@ -28,38 +63,6 @@
     <li>Check off each goal and that'll be up on the wall too</li>
     <li>Check your personal dashboard to see your time, progress, and efficiency score</li>
     <li>Visit the assignments pages to read what others are posting about each assignment</li>
-</ul>
-
-<h2>Features List</h2>
-
-<p>Prior to starting the next stack, here are my priorities:</p>
-
-<ul>
-    <li>MONDAY & TUESDAY: OAauth 2 integration is a must for IFTTT. Setup on Django. Build endpoints. Connect member accounts with IFTTT. Connect IFTTT webhooks with member accounts. Get it to connect with your device! Build sessions class as separate app. Build ability to log sessions in person and via assignment.......</li>
-    <li>WEDNESDAY: User dashboard. Profile pages. Work on buildling classes and relationships to visualize on the site. Generic views for efficiency!</li>
-    <li>THURSDAY: Efficiency score class? JQuery/Ajax? Bootstrap?</li>
-    <li>IF TIME: Implement flat pages, chunks, and change layout.</li>
-    
-    <li>Build Efficiency Score Class</li>
-      <ul>
-        <li>average time spent</li>
-        <li>avg assignments per session</li>
-        <li>assignment difficulty</li>
-      </ul>
-    <li>One to One/Many Relationships</li>
-      <ul>
-        <li>Member and each session</li>
-        <li>Member and each assignment</li>
-        <li>Member and each profile</li>
-        <li>Session and each assignment (when completed)</li>
-        <li>Many members for one cohort</li>
-        <li>Assignment can have many comments</li>
-        <li>Users can have many comments</li>
-      </ul>
-    <li>Many to Many Relationships:</li>
-      <ul>
-        <li>Members share many assignments</li>
-      </ul>
 </ul>
   
 {% endblock %}

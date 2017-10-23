@@ -27,7 +27,7 @@ IFTTT_KEY = os.environ.get('IFTTT_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['a0bd1f8a.ngrok.io','localhost']
 
 AUTH_USER_MODEL = 'members.Member'
 
@@ -37,8 +37,6 @@ LOGIN_REDIRECT_URL = '/success/' # This is temporary until I build out dashboard
 # To test password reset system (since not using email server)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Temporarily enable CORS requests from all domains
-CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -51,8 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oauth2_provider',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
