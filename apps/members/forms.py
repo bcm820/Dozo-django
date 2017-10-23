@@ -5,7 +5,7 @@ from django import forms
 from .models import Member
 
 
-# Form for new members
+# Join Dozo
 class CreateMember(forms.ModelForm):
 
     # Create password and confirmation fields to check

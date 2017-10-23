@@ -1,9 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'members/base.html' %}
 
 {% block content %}
-<h2>Join Dozo</h2>
 
-<form action=/members/register/ method=post>
+<h2>Join <em>Dozo</em></h2>
+
+<form method=post action=/members/register/>
 
     {% csrf_token %}
 

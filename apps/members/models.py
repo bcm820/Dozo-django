@@ -16,7 +16,7 @@ def lenLessThanEight(value):
     if len(value) < 8:
         raise ValidationError('(!)')
 
-
+# Manager for user creation
 class MemberManager(BaseUserManager):
 
     def create_user(self, username, first_name, email, password = None):
@@ -41,7 +41,7 @@ class MemberManager(BaseUserManager):
         member.save(using = self._db)
         return member
 
-
+# Member Model (replaces Django's auth.Model)
 class Member(AbstractBaseUser):
     first_name = models.CharField(max_length=45, validators=[lenLessThanFive])
     last_name = models.CharField(max_length=45)
