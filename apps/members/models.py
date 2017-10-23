@@ -8,13 +8,13 @@ from django.core.exceptions import ValidationError
 
 # Validators
 # See forms.py for password confirmation validator
-def lenLessThanFive(value):
-    if len(value) < 5:
-        raise ValidationError('(!)')
+def lenLessThanThree(value):
+    if len(value) < 3:
+        raise ValidationError('This field requires 3 characters minimum.')
 
 def lenLessThanEight(value):
     if len(value) < 8:
-        raise ValidationError('(!)')
+        raise ValidationError('Your password must be 8 characters minimum.')
 
 # Manager for user creation
 class MemberManager(BaseUserManager):
@@ -43,9 +43,9 @@ class MemberManager(BaseUserManager):
 
 # Member Model (replaces Django's auth.Model)
 class Member(AbstractBaseUser):
-    first_name = models.CharField(max_length=45, validators=[lenLessThanFive])
+    first_name = models.CharField(max_length=45, validators=[lenLessThanThree])
     last_name = models.CharField(max_length=45)
-    username = models.CharField(max_length=45, unique=True, validators=[lenLessThanFive])
+    username = models.CharField(max_length=45, unique=True, validators=[lenLessThanThree])
     email = models.EmailField(max_length=45, unique=True)
     password = models.CharField(max_length=100, validators=[lenLessThanEight])
     added = models.DateTimeField(auto_now_add=True)
@@ -76,3 +76,26 @@ class Member(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Session(models.Model): # instantiated at arrival
+    calendar_date = models.DateTimeField()
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField() # added at departure
+    duration = models.IntegerField() # calculated (timedelta) after departure
+
+class Assignment(models.Model):
+    stack = models.CharField(max_length=45) # e.g. Python
+    section = models.CharField(max_length=45) # e.g. Django
+    title = models.CharField(max_length=45)
+    time_estimate = models.IntegerField()
+    difficulty = models.IntegerField() # from 1-3
+
+class Goal(models.Model):
+    title = models.CharField(max_length=45)
+    description = models.TextField()
+
+class Profile(models.Model):
+    member = models.ForeignKey(Member, related_name="profile") # 1-to-1
+    start_date = models.DateTimeField() # when started at Dojo
+    dream_job = models.CharField(max_length=45)

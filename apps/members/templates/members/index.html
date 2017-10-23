@@ -3,9 +3,7 @@
 {% block content %}
 <h2>Welcome to <em>Dozo</em></h2>
 
-  <p>Welcome to <em>Dozo</em>, a data-driven productivity, collaboration, and goal targeting tool.</p>
-
-<h2>Why Join?</h2>
+  <p>Welcome to <em>Dozo</em>, a IoT-powered, data-driven productivity, collaboration, and goal targeting tool.</p>
 
   <p>We all have different methods and means of progress in our journeys to becoming self-sufficient developers,
     <br>but there are two main determining factors for our success: <em>time</em> and <em>efficiency</em>.</p>
@@ -13,14 +11,55 @@
   <p>With <em>Dozo</em>, here's how you can optimize your growth as a developer:</p>
 
   <ul>
-    <li><strong>Visualize your hours</strong> spent at the Dojo or wherever you're able to find time to code.</li>
-    <li><strong>Set personal goals</strong> for each day and work towards accomplishing them before the day ends.</li>
-    <li><strong>Track your progress</strong> and update others on where you are in your learning track.</li>
-    <li><strong>Stay connected</strong> with cohort-mates and others at the Dojo so all can grow together.</li>
+    <li><strong>Visualize your hours</strong> spent at the Dojo or wherever you're able to find time to code</li>
+    <li><strong>Set personal goals</strong> for each day and work towards accomplishing them before the day ends</li>
+    <li><strong>Track your progress</strong> and update others on where you are in your learning track</li>
+    <li><strong>Check in and stay connected</strong> with cohort-mates through virtual stand-up meetings</li>
   </ul>
 
 <h2>How <em>Dozo</em> Works</h2>
 
-  <p>Other details about how it works, and IFTTT</p>
+<p>In general, <em>Dozo</em> is about keeping it simple:</p>
+
+<ul>
+    <li>Sign up for IFTTT and connect it to your device and this website</li>
+    <li>When you arrive at the Dojo, Dozo will log your start of day</li>
+    <li>Take a minute to jot down your day's goals -- they'll show up on the newsfeed</li>
+    <li>Check off each goal and that'll be up on the wall too</li>
+    <li>Check your personal dashboard to see your time, progress, and efficiency score</li>
+    <li>Visit the assignments pages to read what others are posting about each assignment</li>
+</ul>
+
+<h2>Features List</h2>
+
+<p>Prior to starting the next stack, here are my priorities:</p>
+
+<ul>
+    <li>MONDAY & TUESDAY: OAauth 2 integration is a must for IFTTT. Setup on Django. Build endpoints. Connect member accounts with IFTTT. Connect IFTTT webhooks with member accounts. Get it to connect with your device! Build sessions class as separate app. Build ability to log sessions in person and via assignment.......</li>
+    <li>WEDNESDAY: User dashboard. Profile pages. Work on buildling classes and relationships to visualize on the site. Generic views for efficiency!</li>
+    <li>THURSDAY: Efficiency score class? JQuery/Ajax? Bootstrap?</li>
+    <li>IF TIME: Implement flat pages, chunks, and change layout.</li>
+    
+    <li>Build Efficiency Score Class</li>
+      <ul>
+        <li>average time spent</li>
+        <li>avg assignments per session</li>
+        <li>assignment difficulty</li>
+      </ul>
+    <li>One to One/Many Relationships</li>
+      <ul>
+        <li>Member and each session</li>
+        <li>Member and each assignment</li>
+        <li>Member and each profile</li>
+        <li>Session and each assignment (when completed)</li>
+        <li>Many members for one cohort</li>
+        <li>Assignment can have many comments</li>
+        <li>Users can have many comments</li>
+      </ul>
+    <li>Many to Many Relationships:</li>
+      <ul>
+        <li>Members share many assignments</li>
+      </ul>
+</ul>
   
 {% endblock %}
