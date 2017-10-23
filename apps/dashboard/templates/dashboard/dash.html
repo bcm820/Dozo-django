@@ -2,8 +2,12 @@
 
 {% block content %}
 
-<h2>Welcome, <em>{{request.user.first_name}}.</em></h2>
+<h2>Setup <em>Dozo</em></h2>
 
 <h4>Your last login was <em>{{request.user.last_login}}</em></h4>
-  
+
+
+
+{{request.user.first_name}}
+
 {% endblock %}

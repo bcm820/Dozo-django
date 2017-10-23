@@ -1,0 +1,19 @@
+{% extends "members/base.html" %}
+
+{% block content %}
+
+<h2>Sync <em>Dozo</em></h2>
+
+<h4>In order to sync <em>Dozo</em> with your device, do the following:</h4>
+
+<ul>
+    <li>1. Sign up with <a href="http://www.ifttt.com">IFTTT</a>, a free platform that helps you to do more with all your apps and devices.</li>
+    <li>2. On the IFTTT site, ... setup (both applets).</li>
+    <li>3. For each applet, use the following device ID: {{request.user.device.ifttt_id}}</li>
+    <li>4. Download the IFTTT app onto your smartphone. IFTTT is available for iPhone and Android devices.</li>
+    <li>5. Log into your account on the IFTTT app.</li>
+</ul>
+
+<p>Now, whenever you are in proximity of the Dojo, Dozo will log your start time! You can check back on this page anytime to see......</p>
+
+{% endblock %}

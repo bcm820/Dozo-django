@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['a0bd1f8a.ngrok.io','localhost']
 AUTH_USER_MODEL = 'members.Member'
 
 # Redirect to dashboard after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/success/' # This is temporary until I build out dashboard
+LOGIN_REDIRECT_URL = '/ifttt/' # This is temporary until I build out dashboard
 
 # To test password reset system (since not using email server)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -43,6 +43,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS = [
     'apps.members',
+    'apps.dashboard',
+    'apps.ifttt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

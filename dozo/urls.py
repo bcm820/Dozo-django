@@ -19,12 +19,16 @@ from apps.members import views
 
 urlpatterns = [
     
-    # Services
+    # Django
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('django.contrib.auth.urls')), # for login within Dozo
 
     # Apps
-    url(r'^$', views.index, name='home'), # Under 'members'
-    url(r'^', include('apps.members.urls')),
+    url(r'^', include('apps.members.urls', namespace='members')),
+    url(r'^ifttt/', include('apps.ifttt.urls', namespace='ifttt')),
+    url(r'^dashboard/', include('apps.dashboard.urls', namespace='dashboard')),
+
+    # later, have a user profile page
+    # return redirect(reverse('users:show', kwargs={'id': your_id_variable }))
 
 ]

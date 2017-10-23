@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+# Import models and validations from Django
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 
 
-# Validators
+# Create custom validators
 # See forms.py for password confirmation validator
 def lenLessThanThree(value):
     if len(value) < 3:
@@ -16,11 +17,11 @@ def lenLessThanEight(value):
     if len(value) < 8:
         raise ValidationError('Your password must be 8 characters minimum.')
 
+
 # Manager for user creation
 class MemberManager(BaseUserManager):
 
     def create_user(self, username, first_name, email, password = None):
-        
         member = self.model(
             username = username,
             first_name = first_name,
@@ -41,7 +42,8 @@ class MemberManager(BaseUserManager):
         member.save(using = self._db)
         return member
 
-# Member Model (replaces Django's auth.Model)
+
+# Create Member Model (replaces Django's auth.Model)
 class Member(AbstractBaseUser):
     first_name = models.CharField(max_length=45, validators=[lenLessThanThree])
     last_name = models.CharField(max_length=45)
@@ -52,6 +54,7 @@ class Member(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
+    # Instantiate MemberManager object
     objects = MemberManager()
 
     USERNAME_FIELD = 'username'
@@ -78,25 +81,13 @@ class Member(AbstractBaseUser):
         return self.is_admin
 
 
-class Session(models.Model): # instantiated at arrival
-    calendar_date = models.DateTimeField()
-    start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField() # added at departure
-    duration = models.IntegerField() # calculated (timedelta) after departure
+# class Assignment(models.Model):
+#     stack = models.CharField(max_length=45) # e.g. Python
+#     section = models.CharField(max_length=45) # e.g. Django
+#     title = models.CharField(max_length=45)
+#     time_estimate = models.IntegerField()
+#     difficulty = models.IntegerField() # from 1-3
 
-class Assignment(models.Model):
-    stack = models.CharField(max_length=45) # e.g. Python
-    section = models.CharField(max_length=45) # e.g. Django
-    title = models.CharField(max_length=45)
-    time_estimate = models.IntegerField()
-    difficulty = models.IntegerField() # from 1-3
-
-class Goal(models.Model):
-    title = models.CharField(max_length=45)
-    description = models.TextField()
-
-class Profile(models.Model):
-    member = models.ForeignKey(Member, related_name="profile") # 1-to-1
-    connected = models.BooleanField() # whether connected to IFTTT
-    in_session = models.BooleanField() # whether logging hours
-    start_date = models.DateTimeField() # when started at Dojo
+# class Goal(models.Model):
+#     title = models.CharField(max_length=45)
+#     description = models.TextField()
