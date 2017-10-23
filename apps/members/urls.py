@@ -7,7 +7,6 @@ urlpatterns = [
     url(r'^join/$', views.join, name='join'),
     url(r'^register/$', views.register),
     url(r'^success/$', views.success, name='success'), # temporary until new app
-    url(r'^auth/', include('django.contrib.auth.urls')),
 
     # later, have a user profile page
     # return redirect(reverse('users:show', kwargs={'id': your_id_variable }))

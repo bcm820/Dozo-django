@@ -19,8 +19,13 @@ from apps.members import views
 
 urlpatterns = [
     
+    # Services
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.index, name='home'),
+    url(r'^auth/', include('django.contrib.auth.urls')), # for login within Dozo
+    url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2')), # to connect with IFTTT
+
+    # Apps
+    url(r'^$', views.index, name='home'), # Under 'members'
     url(r'^', include('apps.members.urls')),
-    
+
 ]

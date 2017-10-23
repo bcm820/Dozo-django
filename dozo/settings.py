@@ -19,8 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i#3p_k4vyz4d_ju8c(t8_n8q=u5$59va%iz2sc^z$#yh!t^$iq'
+# Secure keys in environment variables
+SECRET_KEY = os.environ.get('SECRET_KEY')
+IFTTT_KEY = os.environ.get('IFTTT_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,10 +32,13 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'members.Member'
 
 # Redirect to dashboard after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/success/'
+LOGIN_REDIRECT_URL = '/success/' # This is temporary until I build out dashboard
 
 # To test password reset system (since not using email server)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Temporarily enable CORS requests from all domains
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -46,9 +51,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

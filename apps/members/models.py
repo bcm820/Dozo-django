@@ -97,5 +97,6 @@ class Goal(models.Model):
 
 class Profile(models.Model):
     member = models.ForeignKey(Member, related_name="profile") # 1-to-1
+    connected = models.BooleanField() # whether connected to IFTTT
+    in_session = models.BooleanField() # whether logging hours
     start_date = models.DateTimeField() # when started at Dojo
-    dream_job = models.CharField(max_length=45)
