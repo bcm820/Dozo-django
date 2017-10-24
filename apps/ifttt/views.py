@@ -11,17 +11,27 @@ from django.utils.crypto import get_random_string
 # Misc for IFTTT connection
 from dozo.settings import SECRET_KEY, IFTTT_KEY
 
+# Models
+from ..members.models import Member
+from models import Device, Session
 
-@login_required(login_url='/')
+
 # IFTTT
-def ifttt(request):
+@login_required(login_url='/')
+def sync(request):
     return render(request, 'ifttt/sync.html')
 
 
-# Configure
-def configure(request):
-    random = get_random_string(length=8)
-    return redirect('')
+# Setup
+@login_required(login_url='/')
+def generate(request):
+
+    # Create new device and assign ifttt_id to user in session
+    Device.objects.create(
+        owner = request.user,
+        ifttt_id = get_random_string(length=5))
+
+    return redirect(reverse('ifttt:sync'))
 
 
 # Start Session

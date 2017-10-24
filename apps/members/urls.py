@@ -5,6 +5,6 @@ urlpatterns = [
 
     url(r'^$', views.home, name='home'),
     url(r'^join/$', views.join, name='join'),
-    url(r'^register/$', views.register),
+    url(r'^register/$', views.register, name='register'),
 
 ]

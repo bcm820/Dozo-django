@@ -14,7 +14,7 @@ class Device(models.Model):
     in_session = models.BooleanField() # whether currently logging hours
 
 
-# Create Session Model
+# Create Workday Model
 class Session(models.Model): # instantiated at arrival
     member = models.ForeignKey(Member, related_name="workday")
     calendar_date = models.DateTimeField()

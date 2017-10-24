@@ -23,11 +23,11 @@
       {% block sidebar %}
       <ul class="sidebar-nav">
           {% if not user.is_authenticated %}
-          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'members:home' %}">Home</a></li>
+          <li><a href="{% url 'members:join' %}">Join</a></li>
           <li><a href="{% url 'login' %}">Login</a></li>
-          <li><a href="{% url 'join' %}">Join</a></li>
           {% else %}
-          <li><a href="{% url 'ifttt' %}">Sync</a></li>
+          <li><a href="{% url 'ifttt:sync' %}">Sync</a></li>
           <li><a href="{% url 'logout' %}">Logout</a></li>
           {% endif %}
       </ul>
