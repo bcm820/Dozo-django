@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from apps.members import views
+from apps.landing import views
 
 urlpatterns = [
     
@@ -24,8 +24,7 @@ urlpatterns = [
     url(r'^auth/', include('django.contrib.auth.urls')), # for login within Dozo
 
     # Apps
-    url(r'^', include('apps.members.urls', namespace='members')),
-    url(r'^ifttt/', include('apps.ifttt.urls', namespace='ifttt')),
+    url(r'^', include('apps.landing.urls', namespace='landing')),
     url(r'^dashboard/', include('apps.dashboard.urls', namespace='dashboard')),
 
     # later, have a user profile page

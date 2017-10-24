@@ -6,6 +6,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 
+# 
+from django.core.cache import cache 
+import datetime
+from dozo import settings
+
 
 # Create custom validators
 # See forms.py for password confirmation validator
@@ -53,6 +58,7 @@ class Member(AbstractBaseUser):
     added = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=False)
 
     # Instantiate MemberManager object
     objects = MemberManager()
@@ -79,15 +85,3 @@ class Member(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
-
-
-# class Assignment(models.Model):
-#     stack = models.CharField(max_length=45) # e.g. Python
-#     section = models.CharField(max_length=45) # e.g. Django
-#     title = models.CharField(max_length=45)
-#     time_estimate = models.IntegerField()
-#     difficulty = models.IntegerField() # from 1-3
-
-# class Goal(models.Model):
-#     title = models.CharField(max_length=45)
-#     description = models.TextField()

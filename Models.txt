@@ -1,0 +1,53 @@
+
+
+    
+    3. GOAL (running to-do list)           AGENDAS have GOALS (mtm)
+        - title
+        - desc (optional)
+        - accomplished?
+        - added
+        - updated
+        - private?
+
+    (enter fields in order!)
+    4. ASSIGNMENT                           ASSIGNMENT has COMMENTS (1tm)      2. Assignments page: Assignments have comments
+        - title
+        - estimated_time                                                        3. Members can team up on assignments
+        - difficulty_level
+        - track
+        - stack
+        - optional?
+        - accomplished?
+
+    5. PAIRS
+
+    5. EFFICIENCY SCORE
+        - total_score
+        - avg_weekly_hours (AGENDA durations)
+        - avg_days_assignments (score by difficulty levels)
+
+
+NEWSFEED
+(left side shows users online, and then users offline (grayed out))
+(middle shows events feed, organized by day)
+(right shows stats (25 assignments finished today, 10 goals finished)) - Assignment.objects.filter(workday=...)
+
+    6. EVENTS
+        - User LOGGED ON
+        - GOAL MET by User
+        - ASSIGNMENT FINISHED by User
+        - Users team up on assignments
+        - User added COMMENT ADDED TO ASSIGNMENT
+        - User added COMMENT ADDED TO MEMBER PAGE
+    
+    5. PROFILE                              PROFILE has COMMENTS (1tm)
+        - bio
+        - dream_job
+        - favorite_language
+        - efficiency_score
+    
+    6. COHORT                               COHORT has COMMENTS (1tm)
+        - stack
+
+    7. COMMENT
+        - comment

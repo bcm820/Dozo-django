@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Member
+from models import Member
 
 # Admin form for creating new members. Includes all required fields
 class SuperMemberCreationForm(forms.ModelForm):

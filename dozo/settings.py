@@ -21,15 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Secure keys in environment variables
 SECRET_KEY = os.environ.get('SECRET_KEY')
-IFTTT_KEY = os.environ.get('IFTTT_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['a0bd1f8a.ngrok.io','localhost']
+ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'members.Member'
+AUTH_USER_MODEL = 'landing.Member'
 
 # Redirect to dashboard after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/dashboard/'
@@ -38,13 +37,11 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'apps.members',
+    'apps.landing',
     'apps.dashboard',
-    'apps.ifttt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

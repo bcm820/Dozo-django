@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
@@ -18,7 +18,7 @@ from forms import CreateMember
 
 # Home
 def home(request):
-    return render(request, 'members/index.html')
+    return render(request, 'landing/index.html')
 
 
 # Registration form
@@ -26,7 +26,7 @@ def join(request):
 
     # Render registration form created in forms.py
     form = { "form": CreateMember() }
-    return render(request, 'members/join.html', form)
+    return render(request, 'landing/join.html', form)
 
 
 @require_POST
@@ -47,4 +47,14 @@ def register(request):
     # Re-render the form with invalid data passed in
     else: # Django will take care of rendering validations!
         form = { "form": CreateMember(request.POST) }
-        return render(request, 'members/join.html', form)
+        return render(request, 'landing/join.html', form)
+
+
+def logout_member(request):
+
+    # Set offline status
+    if request.user.is_online == True:
+        request.user.is_online = False
+        request.user.save()
+
+    return redirect('auth/logout')
