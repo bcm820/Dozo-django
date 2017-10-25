@@ -49,7 +49,7 @@ class SuperMemberChangeForm(forms.ModelForm):
 
     # Return initial value of password
     def clean_password(self):
-        return self.initial["password"]
+        return self.initial['password']
 
 
 class MemberAdmin(BaseUserAdmin):
@@ -60,11 +60,11 @@ class MemberAdmin(BaseUserAdmin):
 
     # Displays table of members and fields to filter by
     list_display = ('username', 'first_name', 'last_name', 'email')
-    list_filter = ('added', 'is_active')
+    list_filter = ('added', 'is_online')
 
     # How to display the form when changing a member's info
     fieldsets = (
-        (None, {'fields': ('username',)}),
+        (None, {'fields': ('username', 'password')}),
         ('Personal', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )

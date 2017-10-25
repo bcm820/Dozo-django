@@ -1,11 +1,20 @@
-.sidebar-nav {
-    margin-top: 50px;
-    margin-left: 50px;
-    padding: 0;
-    list-style: none;
+
+.kanban{
+    padding: 10px;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 25% 25% 25% 25%;
 }
 
-.adjust{
-    margin-top: 30px;
-    width: 60%;
+p{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.center{
+    text-align: center;
+}
+
+.lane{
+    padding: 10px;
 }

@@ -2,15 +2,89 @@
 
 {% block content %}
 
-<h2>Welcome, <em>{{request.user.first_name}}.</em></h2>
+<!-- Greet user and update on last login time (later, timedelta?) -->
+<h5 class=center>Welcome, {{request.user.first_name}}!</h5>
+<p class=center>Last logged in on {{request.user.last_login}}</p>
 
-<h4>Your last login was <em>{{request.user.last_login}}</em></h4>
+<!-- Display online users if not alone -->
+{% if online_users|length > 1 %}
+<h6>Other Members Online:</h6>
+<p>
+    {% for user in online_users %}
+        {% if not user == request.user %}
+            {{user.username}} ({{user.first_name}})<br>
+        {% endif %}
+    {% endfor %}
+</p>
+{% endif %}
+<hr>
 
-<p>Online Users:</p>
-<ul>
-{% for user in online_users %}
-<li>{{user.username}} ({{user.first_name}})</li>
-{% endfor %}
-</ul>
+
+
+<div class=kanban>
+    <div class="border border-top-0 lane">
+        <h5 class=center>Your Assignments</h5><hr>
+
+        <!-- If no assignments, display selector -->
+        {% if assignments|length == 0 %}
+
+            <p>The clock is ticking! Select a track from the dropdown menu and click the button to begin doing some assignments!</p>
+            <form method=POST action="{% url 'dashboard:assignments' %}">{% csrf_token %}
+
+                <div class=form_group>
+                    <select name=track class=form-control>
+                        <option value=pyFun>Python Fundamentals</option>
+                        <option value=pyOOP>Python OOP</option>
+                        <option value=flask>Python: Flask</option>
+                    </select>
+                </div>
+                <p><button type=submit class='btn btn-primary'>Begin</button></p>
+                    
+            </form>
+        
+        <!-- If assignments, display and show form to add to plans -->
+        {% else %}
+            <div id=accordion>
+            {% for assignment in assignments %}
+            <div class="card">
+                <div class="card-header">
+                    <a class="card-link" href="#">
+                        <p>
+                            {{assignment.title}}<br>
+                            <small>
+                                Points: <big>{{assignment.points}}</big><br>
+                                Est. time: {{assignment.time_est}}<br>
+                                Potential Bonus: {{assignment.time_pts}}
+                            </small>
+                        </p>
+                    </a>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="border border-top-0 border-left-0 lane">
+        <h5 class=center>Today's Plans</h5><hr>
+
+        {% if assignments|length > 0 %}
+            <p>Quick! There's no time to waste! You've got a lot of work to do.</p>
+            <p>Click the assignments to the left to add them to today's plans.</p>
+            <p>Remember, if you finish your day's plans, you'll multiply your points by the amount of assignments you did!</p>
+            <p>But watch out: If you don't complete your day's plans, you won't earn the multiplier.</p>
+        {% else %}
+            <p>Keep going! How many assignments can you crush today?</p>
+            <p>You currently have <big>{{plans.count}}</big> assignments on your agenda. If you finish them all, you can earn a total of <big>{{todays_points}}</big>! But if you added one too many, click an assignment to move it back to the assignments lane.</p>
+        {% endif %}
+            <p>(INSERT BUTTON HERE)</p>
+
+    </div>
+    <div class="border border-top-0 border-left-0 lane">
+        <h5 class=center>Currently Working On</h5><hr>
+    </div>
+    <div class="border border-top-0 border-left-0 lane">
+        <h5 class=center>Done!</h5><hr>
+    </div>
+</div>
 
 {% endblock %}
