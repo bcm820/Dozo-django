@@ -5,21 +5,24 @@ from __future__ import unicode_literals
 from django.db import models
 from ..landing.models import Member
 
+# Import time ops
+import datetime
+
 
 # Models: Assignment, Goal, Scorecard 
 
 class Assignment(models.Model):
     TRACKS = (
         ('a', 'Python Fundamentals'),
-        ('b', 'Python OOP'),
-        ('c', 'Python: Flask'),
+        ('b', 'Python: Django'),
     )
     LANE = (
         ('a', 'assignments'),
         ('b', 'plans'),
-        ('c', 'current'),
-        ('d', 'done'),
-        ('e', 'display')
+        ('c', 'commit'),
+        ('d', 'current'),
+        ('e', 'done'),
+        ('f', 'display')
     )
     member = models.ForeignKey(Member, related_name="assignments", on_delete=models.CASCADE)
     pair = models.ForeignKey(Member, related_name="pair_assignment")
@@ -28,10 +31,11 @@ class Assignment(models.Model):
     title = models.CharField(max_length=45)
     points = models.IntegerField()
     time_est = models.CharField(max_length=45)
-    time_pts = models.DecimalField(max_digits=3, decimal_places=1)
+    est_time = models.IntegerField() # in minutes, to compare with delta of start-end
+    time_mult = models.DecimalField(max_digits=3, decimal_places=1)
     start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField(blank=True)
-    on_time = models.BooleanField(blank=True) # if on time, add
+    end_time = models.DateTimeField(default=datetime.datetime.now())
+    on_time = models.BooleanField(default=False) # change to true when calc
     optional = models.BooleanField(default=False)
 
 class Goal(models.Model): # goals persist over workdays until done
@@ -43,9 +47,9 @@ class Goal(models.Model): # goals persist over workdays until done
 
 class Scorecard(models.Model):
     member = models.ForeignKey(Member, related_name="scorecards", on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True, unique=True)
-    potential = models.DecimalField(max_digits=4, decimal_places=2)
-    actual = models.DecimalField(max_digits=4, decimal_places=2)
+    date = models.DateField(auto_now_add=True)
+    potential = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    actual = models.DecimalField(max_digits=4, decimal_places=2, default=0)
     # use scorecards to calculate running total, and find average
 
 

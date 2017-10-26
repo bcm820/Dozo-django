@@ -3,88 +3,146 @@
 {% block content %}
 
 <!-- Greet user and update on last login time (later, timedelta?) -->
-<h5 class=center>Welcome, {{request.user.first_name}}!</h5>
-<p class=center>Last logged in on {{request.user.last_login}}</p>
-
-<!-- Display online users if not alone -->
-{% if online_users|length > 1 %}
-<h6>Other Members Online:</h6>
-<p>
-    {% for user in online_users %}
-        {% if not user == request.user %}
-            {{user.username}} ({{user.first_name}})<br>
-        {% endif %}
-    {% endfor %}
-</p>
-{% endif %}
-<hr>
-
-
+<div>
+    <h1 class='display-3 center'><em>Dozo</em></h3>
+        <p class=center>
+        Welcome, {{request.user.first_name}}! Let's crush those assignments!<br>
+        <small>Last logged in on {{request.user.last_login}}</small>
+        </p>
+</div>
 
 <div class=kanban>
-    <div class="border border-top-0 lane">
-        <h5 class=center>Your Assignments</h5><hr>
 
-        <!-- If no assignments, display selector -->
-        {% if assignments|length == 0 %}
+<div class="border border-top-0 border-bottom-0 lane">
+<h5 class=center>Your Assignments</h5><hr>
 
-            <p>The clock is ticking! Select a track from the dropdown menu and click the button to begin doing some assignments!</p>
-            <form method=POST action="{% url 'dashboard:assignments' %}">{% csrf_token %}
+{% if not assignments|length %}
 
-                <div class=form_group>
-                    <select name=track class=form-control>
-                        <option value=pyFun>Python Fundamentals</option>
-                        <option value=pyOOP>Python OOP</option>
-                        <option value=flask>Python: Flask</option>
-                    </select>
-                </div>
-                <p><button type=submit class='btn btn-primary'>Begin</button></p>
-                    
-            </form>
+    <p><strong>Select a Track</strong></p>
+    <small>
+    <p>Select a track from the menu to begin timing your assignments. Hurry! The clock is ticking!</p>
+    </small>
+
+    <form method=POST action="{% url 'dashboard:assignments' %}">
+        <div class=form_group>{% csrf_token %}
+            <select name=track class=form-control>
+                <option value=py_fun>Python Fundamentals</option>
+                <option value=py_django_orm>Python: Django</option>
+            </select>
+        </div>
+        <p><button type=submit class='btn btn-primary'>Begin</button></p>    
+    </form>
         
-        <!-- If assignments, display and show form to add to plans -->
-        {% else %}
-            <div id=accordion>
-            {% for assignment in assignments %}
-            <div class="card">
-                <div class="card-header">
-                    <a class="card-link" href="#">
-                        <p>
-                            {{assignment.title}}<br>
-                            <small>
-                                Points: <big>{{assignment.points}}</big><br>
-                                Est. time: {{assignment.time_est}}<br>
-                                Potential Bonus: {{assignment.time_pts}}
-                            </small>
-                        </p>
-                    </a>
-                </div>
-              </div>
-            {% endfor %}
+{% elif assignments|length %}
+
+    <div class="list-group">
+    {% for assignment in assignments %}
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <small class="mb-1">{{assignment.title}}</small>
+            <small>{{assignment.points}} pt(s)</small>
             </div>
-        {% endif %}
+            <small class="mb-1">
+                Estimated time: {{assignment.time_est}}<br>
+                Time Multiplier: {{assignment.time_mult|floatformat }}
+                {% if assignment.optional %}<br>(Optional){% endif %}
+            </small>
+        </a>
+    {% endfor %}
     </div>
-    <div class="border border-top-0 border-left-0 lane">
-        <h5 class=center>Today's Plans</h5><hr>
 
-        {% if assignments|length > 0 %}
-            <p>Quick! There's no time to waste! You've got a lot of work to do.</p>
-            <p>Click the assignments to the left to add them to today's plans.</p>
-            <p>Remember, if you finish your day's plans, you'll multiply your points by the amount of assignments you did!</p>
-            <p>But watch out: If you don't complete your day's plans, you won't earn the multiplier.</p>
-        {% else %}
-            <p>Keep going! How many assignments can you crush today?</p>
-            <p>You currently have <big>{{plans.count}}</big> assignments on your agenda. If you finish them all, you can earn a total of <big>{{todays_points}}</big>! But if you added one too many, click an assignment to move it back to the assignments lane.</p>
-        {% endif %}
-            <p>(INSERT BUTTON HERE)</p>
+{% endif %}
+</div>
 
+<div class="border border-top-0 border-bottom-0 border-left-0 lane">
+<h5 class=center>Today's Plans</h5><hr>
+
+{% if plans|length %}
+    <small>
+        <p class=center><strong>{{plans.count}} assignment(s)</strong> added for a<br> potential maximum of <strong>{{potential_points|floatformat}} points</strong></p>
+    </small>
+    <div class="list-group">
+    {% for assignment in plans %}
+    <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <small class="mb-1">{{assignment.title}}</small>
+          <small>{{assignment.points}} pt(s)</small>
+        </div>
+        <small class="mb-1">
+            Estimated time: {{assignment.time_est}}<br>
+            Time Multiplier: {{assignment.time_mult|floatformat }}
+        </small>
+    </a>
+    {% endfor %}
     </div>
-    <div class="border border-top-0 border-left-0 lane">
-        <h5 class=center>Currently Working On</h5><hr>
+{% elif commit|length %}
+    <small>
+        <p class=center><strong>{{commit|length}} assignment(s)</strong> added for a<br> potential maximum of <strong>{{potential_points|floatformat}} points</strong></p>
+    </small>
+    <div class="list-group">
+    {% for assignment in commit %}
+    <a class="list-group-item list-group-item-action align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <small class="mb-1">{{assignment.title}}</small>
+          <small>{{assignment.points}} pt(s)</small>
+        </div>
+        <small class="mb-1">
+            Estimated time: {{assignment.time_est}}<br>
+            Time Multiplier: {{assignment.time_mult|floatformat }}
+        </small>
+    </a>
+    {% endfor %}
     </div>
-    <div class="border border-top-0 border-left-0 lane">
-        <h5 class=center>Done!</h5><hr>
-    </div>
+{% endif %}
+
+</div>
+
+<div class="border border-top-0 border-bottom-0 border-left-0 lane">
+<h5 class=center>Currently Working On</h5><hr>
+{% if plans|length or not commit|length %}
+    <p><strong>Plan Your Day</strong></p>
+    <small>
+    <p>Pick <em>only</em> today's assignments. The more you finish, the more points you'll earn!</p>
+    </small>
+
+    <p><strong>Commit Today's Plans</strong></p>
+    <small>
+        <p>Double check today's assignments and make sure you can commit to finish everything! Before committing, you can click an assignment to return an assignment to the assignment lane.</p>
+        <p>Double check today's assignments and make sure you can commit to finish everything! Before committing, you can click an assignment to return an assignment to the assignment lane.</p>
+    </small>
+{% endif %}
+{% if not commit|length %}
+    <p><a href="{% url 'dashboard:commit' %}"><button type=submit class='btn btn-primary'>Commit!</button></a></p>
+{% endif %}
+{% if commit|length %}
+    <p><strong>Time Your Assignments!</strong></p>
+    <small>
+        <p>Now that you committed today's plans, it's time to get to work. When you click the button below, your first assignment will start... and so will the timer!</p>
+        <p>When done with an assignment, click the button to change its status to "Done." Then the timer will start up for your next assignment!</p>
+        <p>Keep on working until all your assignments are done!</p>
+    </small>
+{% endif %}
+
+
+
+
+</div>
+<div class="border border-top-0 border-bottom-0 border-left-0 lane">
+<h5 class=center>Done!</h5><hr>
+
+<ul class=list-group>
+    <small>
+    <li class="list-group-item center"><strong>How Scoring Works</strong></li>
+    <li class=list-group-item>Every assignment earns you points based on difficulty level.</li>
+    <li class=list-group-item>Finishing within an assignment's estimated time <em>multiplies</em> the points you earn for it.</li>
+    <li class=list-group-item>If you finish your planned assignments for the day, you'll multiply your overall score by the amount of assignments you did!</li>
+    </small>
+</ul>
+
+</div>
+
+
+
 </div>
 
 {% endblock %}

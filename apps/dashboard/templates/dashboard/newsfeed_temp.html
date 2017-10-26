@@ -1,0 +1,11 @@
+<!-- Display online users if not alone -->
+{% if online_users|length > 1 %}
+<h6>Other Members Online:</h6>
+<p>
+    {% for user in online_users %}
+        {% if not user == request.user %}
+            {{user.username}} ({{user.first_name}})<br>
+        {% endif %}
+    {% endfor %}
+</p>
+{% endif %}
