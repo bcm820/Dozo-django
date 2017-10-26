@@ -51,34 +51,19 @@
     </div>
 
 {% endif %}
+
 </div>
 
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Your Plans</h5><hr>
-{% if not commit|length %}
-    <p><strong>Plan Your Session</strong></p>
-    <small>
-    <p>How many assignments can you finish? You can multiply your points by:
-        <br>1) Completing an assignment on time
-        <br>2) Completing all your assignments in one session.</p>
-    </small>
+
+{% if commit|length == 0 %}
+<p><strong>Last One Left!</strong></p>
+<small>
+    <p>You're in the final stretch!<br>Don't give up now!</p>
+</small>
 {% endif %}
-{% if plans|length %}
-    <div class="list-group">
-    {% for assignment in plans %}
-    <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
-        <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong></small>
-          <small>{{assignment.points}}pts</small>
-        </div>
-        <small class="mb-1">
-            Estimated Time: {{assignment.est_duration}}<br>
-            Time Multiplier: {{assignment.time_mult|floatformat }}
-        </small>
-    </a>
-    {% endfor %}
-    </div>
-{% elif commit|length %}
+
     <div class="list-group">
     {% for assignment in commit %}
     <a href =# class="list-group-item list-group-item-action align-items-start">
@@ -89,11 +74,13 @@
         <small class="mb-1">
             Estimated Time: {{assignment.est_duration}}<br>
             Time Multiplier: {{assignment.time_mult|floatformat }}
+            {% if assignment.optional %}<br>(Optional){% endif %}
         </small>
     </a>
     {% endfor %}
+    <br>
     </div>
-{% endif %}<br>
+
 <ul class=list-group>
     <small>
     <li class="list-group-item center"><strong>How Scoring Works</strong></li>
@@ -112,21 +99,33 @@
 
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Currently Working On</h5><hr>
-{% if commit|length %}
-    <p><strong>Timing Your Assignments</strong></p>
+
+{% if current|length %}
+
+    <div class="list-group">
+    {% for assignment in current %}
+        <a href=# class="list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small>{{assignment.points}}pts</small>
+            </div>
+            <small class="mb-1">
+                Estimated Time: {{assignment.est_duration}}<br>
+                Time Multiplier: {{assignment.time_mult|floatformat }}
+                {% if assignment.optional %}<br>(Optional){% endif %}
+            </small>
+        </a>
+    {% endfor %}
+    </div>
+
     <small>
-        <p>Good job! Now it's time to work. When you click the button, the timer for your first assignment will start.</p>
+        <p>You only have <strong>{{commit|length}}</strong>
+            assignment(s) left after this one. You got this!
+        </p>
     </small>
-    <p><a href="{% url 'dashboard:go' %}"><button type=submit class='btn btn-primary'>Go!</button></a></p><br>
-{% endif %}
-{% if plans|length or not commit|length %}
-    <p><strong>Commit to Working Hard</strong></p>
-    <small>
-        <p>Edit your plans by clicking the assignments again. When you're ready, click the button to commit to working throughout this session.</p>
-    </small>
-{% endif %}
-{% if not commit|length %}
-    <p><a href="{% url 'dashboard:commit' %}"><button type=submit class='btn btn-primary'>Set!</button></a></p>
+    <p><a href="{% url 'dashboard:go' %}">
+        <button type=submit class='btn btn-primary'>Dozo!</button>
+    </a></p><hr>
 {% endif %}
 
 <!-- INSERT GOALS HERE -->
@@ -158,6 +157,9 @@
     </div><br>
 
 </div>
+
+
+
 </div>
 
 {% endblock %}

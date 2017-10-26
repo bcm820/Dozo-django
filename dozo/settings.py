@@ -36,7 +36,6 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 # To test password reset system (since not using email server)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
 # Application definition
 
 INSTALLED_APPS = [
