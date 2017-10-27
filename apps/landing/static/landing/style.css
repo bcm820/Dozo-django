@@ -1,9 +1,12 @@
 
 .kanban{
-    padding: 10px;
+    padding: 20px;
     display: grid;
-    grid-gap: 10px;
     grid-template-columns: 25% 25% 25% 25%;
+}
+
+#center{
+    padding-left: 300px;
 }
 
 p{
@@ -21,6 +24,36 @@ p{
 }
 
 .inline{
-    display: inline;
+    display: inline-block;
     padding: 5px;
 }
+
+body{
+    background: url("/static/landing/arches.png")
+}
+
+.container{
+    background-color: white;
+}
+
+.color1{
+    background-color: rgb(241, 225, 225)
+}
+
+.color2{
+    background-color: rgb(220, 235, 243)
+}
+
+.color3{
+    background-color: rgb(240, 240, 216)
+}
+
+.color4{
+    background-color: rgb(245, 212, 212)
+}
+
+.scoring{
+    background: url("/static/landing/arches.png")
+}
+
+

@@ -12,13 +12,13 @@ from django.views.decorators.http import require_POST
 # Models and forms
 from ..landing.models import Member
 from models import Assignment, Goal, Scorecard
-from dashboard import *
+from calculations import *
 from assignments import *
 
 # Import time ops
 import datetime
 from django.utils import timezone
-from dateutil.relativedelta import relativedelta
+
 
 
 # Home
@@ -116,12 +116,14 @@ def go(request):
     
     # query assignments in lanes
     # note: query stored in a variable stores as uniterable object
-    commit = request.user.assignments.filter(status='c'),
-    current = request.user.assignments.filter(status='d'),
+    commit = request.user.assignments.filter(status='c')
+    current = request.user.assignments.filter(status='d')
     done = request.user.assignments.filter(status='e')
 
     # if commit is empty (all assignments done), redirect to dash
-    if request.user.assignments.filter(status='c').count() == 0:
+    if request.user.assignments.filter(
+        status='c').count() == 0 and request.user.assignments.filter(
+            status='d').count() == 0:
         return redirect(reverse('dashboard:dash'))
 
     # if assignment just finished, update to done and log times
@@ -158,25 +160,21 @@ def dozo(request):
         'assignments': request.user.assignments.filter(status='a'),
         'commit': request.user.assignments.filter(status='c'),
         'current': request.user.assignments.filter(status='d'),
-        'done': request.user.assignments.filter(status='e').order_by("-id")
+        'done': request.user.assignments.filter(status='e').order_by("-id"),
+        'stats': request.user.assignments.filter(status='e'),
+        'potential_points': request.user.scorecards.get(date = datetime.date.today()).potential,
+        'actual_points': request.user.scorecards.get(date = datetime.date.today()).actual
     }
-    
-    # If user's scorecard for today exists, update potential points and add to dict
-    if request.user.scorecards.filter(date = datetime.date.today()).count() > 0:
-        if not request.user.assignments.filter(status='d').count() > 0:
-            points = potential_points(request.user)
-        context['potential_points'] = request.user.scorecards.get(
-            date = datetime.date.today()).potential
 
     return render(request, 'dashboard/dash2.html', context)
 
 
 # Done -> Display
-def archive(request, id):
+def archive(request):
     
     # move assignment to plans lane by updating status field
-    archive = Assignment.objects.get(id=id)
-    archive.status = 'f'
-    archive.save()
+    for assignment in Assignment.objects.filter(status='e'):
+        assignment.status = 'f'
+        assignment.save()
 
     return redirect(reverse('dashboard:dash'))

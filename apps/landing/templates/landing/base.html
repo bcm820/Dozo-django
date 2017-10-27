@@ -25,9 +25,13 @@
             <li class=nav-item><a class=nav-link href="{% url 'landing:join' %}">Join</a></li>
             <li class=nav-item><a class=nav-link href="{% url 'login' %}">Login</a></li>
         {% else %}
+            {% if current|length or done|length %}
+            <li class=nav-item><a class=nav-link href="{% url 'dashboard:go' %}">Dashboard</a></li>
+            {% else %}
             <li class=nav-item><a class=nav-link href="{% url 'dashboard:dash' %}">Dashboard</a></li>
+            {% endif %}
             <li class=nav-item><a class=nav-link href="#">Newsfeed</a></li>
-            <li class=nav-item><a class=nav-link href="{% url 'logout' %}">Logout</a></li>
+            <li class=nav-item><a class=nav-link href="{% url 'landing:logout_member' %}">Logout</a></li>
         {% endif %}
         </ul>
         <br>
@@ -44,4 +48,5 @@
 
 </div>
 </body>
+
 </html>

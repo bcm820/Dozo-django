@@ -6,7 +6,17 @@
     <h1 class='display-4 center'><em>Dozo</em></h3>
         <p class=center>
         Welcome, <strong>{{request.user.first_name}}</strong>! Let's crush those assignments!<br>
-        <small>Last logged in on <strong>{{request.user.last_login}}</strong></small>
+        <small>
+            You logged in on <strong>{{request.user.last_login}}</strong><br>
+            <strong>Users online:</strong> 
+    {% for user in online_users %}
+        {% if online_users|length == 1 %}
+            {{user.username}} (just you!)
+        {% else %}
+            {{user.username}} ({{user.first_name}}) &nbsp;
+        {% endif %}
+    {% endfor %}
+        </small>
         </p>
 </div>
 
@@ -36,15 +46,15 @@
 
     <div class="list-group">
     {% for assignment in assignments %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small class="mb-1"><strong>{{assignment.title}}</strong> 
+                {% if assignment.optional %}(Optional){% endif %}</small>
             <small>{{assignment.points}}pts</small>
             </div>
             <small class="mb-1">
                 Estimated Time: {{assignment.est_duration}}<br>
                 Time Multiplier: {{assignment.time_mult|floatformat }}
-                {% if assignment.optional %}<br>(Optional){% endif %}
             </small>
         </a>
     {% endfor %}
@@ -57,43 +67,44 @@
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Your Plans</h5><hr>
 
-{% if commit|length == 0 %}
-<p><strong>Last One Left!</strong></p>
+{% if commit|length %}
+    <p><strong>Session List:</strong></p>
+{% endif %}
+{% if not commit|length and current|length %}
+    <p><strong>Last One Left!</strong></p>
+    <small>
+        <p>You're in the final stretch! After completing this assignment, you'll be able to see your scorecard for this session. Keep going!</p>
+    </small>
+{% elif not current|length %}
+
+<p><strong>You did it!</strong></p>
 <small>
-    <p>You're in the final stretch!<br>Don't give up now!</p>
+    <p>Great session, today! You worked really hard and learned a lot at the same time.
+        To start a new session, click this button.</p>
+    <p><a href="{% url 'dashboard:archive' %}">
+        <button type=submit class='btn btn-primary'>Do More</button>
+    </a></p>
 </small>
+
 {% endif %}
 
     <div class="list-group">
     {% for assignment in commit %}
-    <a href =# class="list-group-item list-group-item-action align-items-start">
+    <a href =# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
         <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small class="mb-1"><strong>{{assignment.title}}</strong> 
+                {% if assignment.optional %}(Optional){% endif %}</small>
           <small>{{assignment.points}}pts</small>
         </div>
         <small class="mb-1">
             Estimated Time: {{assignment.est_duration}}<br>
             Time Multiplier: {{assignment.time_mult|floatformat }}
-            {% if assignment.optional %}<br>(Optional){% endif %}
         </small>
     </a>
-    {% endfor %}
+
+{% endfor %}
     <br>
     </div>
-
-<ul class=list-group>
-    <small>
-    <li class="list-group-item center"><strong>How Scoring Works</strong></li>
-    <li class="list-group-item center">
-        <p>Base Points<br>(Per Assignment)</p><p>x</p>
-        <p>Time Multiplier<br>(Per Assignment)</p><p>x</p>
-        <p># of Assignments<br>(if completed session)</p>
-    </li>
-    </small>
-    <li class="list-group-item center">
-        <strong>Potential: {{potential_points|floatformat}}</strong>
-    </li>
-</ul>
 
 </div>
 
@@ -104,15 +115,15 @@
 
     <div class="list-group">
     {% for assignment in current %}
-        <a href=# class="list-group-item list-group-item-action align-items-start">
+        <a href=# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small class="mb-1"><strong>{{assignment.title}}</strong> 
+                {% if assignment.optional %}(Optional){% endif %}</small>
             <small>{{assignment.points}}pts</small>
             </div>
             <small class="mb-1">
                 Estimated Time: {{assignment.est_duration}}<br>
                 Time Multiplier: {{assignment.time_mult|floatformat }}
-                {% if assignment.optional %}<br>(Optional){% endif %}
             </small>
         </a>
     {% endfor %}
@@ -125,36 +136,67 @@
     </small>
     <p><a href="{% url 'dashboard:go' %}">
         <button type=submit class='btn btn-primary'>Dozo!</button>
-    </a></p><hr>
+    </a></p>
+    
+{% else %}
+
+<p><strong>Here's your stats:</strong></p>
+<small>
+
+{% for assignment in stats %}
+<p>
+    <strong>{{assignment.title}}</strong><br>
+    Start: {{assignment.start_time|date:"P"}}<br>
+    End: {{assignment.end_time|date:"P"}}<br>
+    Time: {{assignment.act_duration}}<br>
+    Time Est: {{assignment.est_duration}}<br>
+    {% if assignment.on_time %}
+    On time: Yes!<br>
+    {% else %}
+    On time: No<br>
+    {% endif %}
+</p>
+{% endfor %}
+</small>
+
+
 {% endif %}
-
-<!-- INSERT GOALS HERE -->
-
-
 </div>
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Done!</h5><hr>
 
-<p><strong>Hard Work Pays Off</strong></p>
+<p><strong>Move Assignments Here</strong></p>
 <small>
-    <p>When this list grows too long for your dashboard, click an assignment to move it to your profile.</p>
+    <p>This is your goal. Move as many assignments as you can to this lane!</p>
 </small>
+    <div class="list-group">
+    <a class="list-group-item align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <small class="mb-1"><strong>Today's Stats</strong></small>
+            </div>
+            <small class="mb-1">
+                Potential This Session: <big><strong>{{potential_points}}</strong></big><br>
+                Today's Total: <big><strong>{{actual_points}}</strong></big>
+            </small>
+        </a>
+    </div>
+
 
     <div class="list-group">
     {% for assignment in done %}
-    <a href="{% url 'dashboard:archive' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+    <a href=# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small class="mb-1"><strong>{{assignment.title}}</strong> 
+                {% if assignment.optional %}(Optional){% endif %}</small>
             <small>{{assignment.points}}pts</small>
             </div>
             <small class="mb-1">
                 Estimated Time: {{assignment.est_duration}}<br>
                 Time Multiplier: {{assignment.time_mult|floatformat }}
-                {% if assignment.optional %}<br>(Optional){% endif %}
             </small>
         </a>
     {% endfor %}
-    </div><br>
+    </div>
 
 </div>
 

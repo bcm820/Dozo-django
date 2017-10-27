@@ -57,4 +57,4 @@ def logout_member(request):
         request.user.is_online = False
         request.user.save()
 
-    return redirect('auth/logout')
+    return redirect('/auth/logout')

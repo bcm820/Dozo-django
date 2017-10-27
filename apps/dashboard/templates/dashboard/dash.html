@@ -6,7 +6,17 @@
     <h1 class='display-4 center'><em>Dozo</em></h3>
         <p class=center>
         Welcome, <strong>{{request.user.first_name}}</strong>! Let's crush those assignments!<br>
-        <small>Last logged in on <strong>{{request.user.last_login}}</strong></small>
+        <small>
+            You logged in on <strong>{{request.user.last_login}}</strong><br>
+            <strong>Users online:</strong> 
+    {% for user in online_users %}
+        {% if online_users|length == 1 %}
+            {{user.username}} (just you!)
+        {% else %}
+            {{user.username}} ({{user.first_name}}) &nbsp;
+        {% endif %}
+    {% endfor %}
+        </small>
         </p>
 </div>
 
@@ -36,7 +46,7 @@
 
     <div class="list-group">
     {% for assignment in assignments %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
             <small class="mb-1"><strong>{{assignment.title}}</strong></small>
             <small>{{assignment.points}}pts</small>
@@ -58,15 +68,15 @@
 {% if not commit|length %}
     <p><strong>Plan Your Session</strong></p>
     <small>
-    <p>How many assignments can you finish? You can multiply your points by:
-        <br>1) Completing an assignment on time
-        <br>2) Completing all your assignments in one session.</p>
+    <p>How many assignments can you finish? You'll earn points for each assignment. Plus, you can multiply those points by:</p>
+    <p>1) Completing assignments on time<br>
+        2) Completing all your assignments in one session</p>
     </small>
 {% endif %}
 {% if plans|length %}
     <div class="list-group">
     {% for assignment in plans %}
-    <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+    <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
         <div class="d-flex w-100 justify-content-between">
           <small class="mb-1"><strong>{{assignment.title}}</strong></small>
           <small>{{assignment.points}}pts</small>
@@ -79,9 +89,10 @@
     {% endfor %}
     </div>
 {% elif commit|length %}
+    <p><strong>Session List:</strong></p>
     <div class="list-group">
     {% for assignment in commit %}
-    <a href =# class="list-group-item list-group-item-action align-items-start">
+    <a href =# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
         <div class="d-flex w-100 justify-content-between">
           <small class="mb-1"><strong>{{assignment.title}}</strong></small>
           <small>{{assignment.points}}pts</small>
@@ -94,33 +105,20 @@
     {% endfor %}
     </div>
 {% endif %}<br>
-<ul class=list-group>
-    <small>
-    <li class="list-group-item center"><strong>How Scoring Works</strong></li>
-    <li class="list-group-item center">
-        <p>Base Points<br>(Per Assignment)</p><p>x</p>
-        <p>Time Multiplier<br>(Per Assignment)</p><p>x</p>
-        <p># of Assignments<br>(if completed session)</p>
-    </li>
-    </small>
-    <li class="list-group-item center">
-        <strong>Potential: {{potential_points|floatformat}}</strong>
-    </li>
-</ul>
 
 </div>
 
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Currently Working On</h5><hr>
 {% if commit|length %}
-    <p><strong>Timing Your Assignments</strong></p>
+    <p><strong>Keep On Working</strong></p>
     <small>
         <p>Good job! Now it's time to work. When you click the button, the timer for your first assignment will start.</p>
     </small>
     <p><a href="{% url 'dashboard:go' %}"><button type=submit class='btn btn-primary'>Go!</button></a></p><br>
 {% endif %}
 {% if plans|length or not commit|length %}
-    <p><strong>Commit to Working Hard</strong></p>
+    <p><strong>Keep On Working</strong></p>
     <small>
         <p>Edit your plans by clicking the assignments again. When you're ready, click the button to commit to working throughout this session.</p>
     </small>
@@ -129,33 +127,29 @@
     <p><a href="{% url 'dashboard:commit' %}"><button type=submit class='btn btn-primary'>Set!</button></a></p>
 {% endif %}
 
-<!-- INSERT GOALS HERE -->
-
-
 </div>
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
 <h5 class=center>Done!</h5><hr>
 
-<p><strong>Hard Work Pays Off</strong></p>
+<p><strong>Move Assignments Here</strong></p>
 <small>
-    <p>When this list grows too long for your dashboard, click an assignment to move it to your profile.</p>
+    <p>This is your goal. Move as many assignments as you can to this lane!</p>
 </small>
-
     <div class="list-group">
-    {% for assignment in done %}
-    <a href="{% url 'dashboard:archive' assignment.id %}" class="list-group-item list-group-item-action align-items-start">
+    <a class="list-group-item align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
-            <small>{{assignment.points}}pts</small>
+            <small class="mb-1"><strong>Potential Points</strong></small>
             </div>
             <small class="mb-1">
-                Estimated Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat }}
-                {% if assignment.optional %}<br>(Optional){% endif %}
+                {% if plans|length %}
+                Number of Assignments: <big><strong>{{plans|length}}</strong></big><br>
+                {% else %}
+                Number of Assignments: <big><strong>{{commit|length}}</strong></big><br>
+                {% endif %}
+                Potential Points: <big><strong>{{potential_points}}</strong></big>
             </small>
         </a>
-    {% endfor %}
-    </div><br>
+    </div>
 
 </div>
 </div>

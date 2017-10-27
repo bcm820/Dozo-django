@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'^set/$', views.commit, name='commit'),
     url(r'^go/$', views.go, name='go'),
     url(r'^dozo/$', views.dozo, name='dozo'),
-    url(r'^archive/(?P<id>\d+)/$', views.archive, name='archive'),
+    url(r'^archive/$', views.archive, name='archive'),
 
 ]
