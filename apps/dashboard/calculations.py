@@ -9,45 +9,30 @@ from models import Assignment, Goal, Scorecard
 import datetime
 
 
-
-
-# Use 'contains' to show list of who else is working on assignment'
-
-
-
-# Potential points a user can earn based on queue and assignment rank
-# Calculate prior to finalizing queue; instantiate scorecard!
+# Calculate total potential points
 def potential_points(user):
-    
+
     # Init container to store potential points
     potential_points = 0
 
-    # Store plans query (planning or committed)
-    if user.assignments.filter(status='b').count() > 0:
-        todays_plans = user.assignments.filter(status='b')
-    else:
-        todays_plans = user.assignments.filter(status='c')
-    
-    # For each assignment, multiply base points by time mult
-    for assignment in todays_plans:
-        temp = assignment.points * assignment.time_mult
-        potential_points += temp
+    # Get assignments in planning or commit lane and add points
+    if request.user.assignments.filter(status='b').count() > 0:
+        plans = request.user.assignments.filter(status='b')
+    elif request.user.assignments.filter(status='c').count() > 0:
+        plans = request.user.assignments.filter(status='c')
+    for assignment in plans:
+        potential_points += assignment.potential
     
     # Multiply potential points by count of queue
-    potential_points *= todays_plans.count()
-    
-    # Update scorecard with potential points
-    scorecard = user.scorecards.get(date = datetime.date.today())
-    scorecard.potential = potential_points
-    scorecard.save()
+    potential_points *= plans.count()
+
+    return potential_points
 
 
-# Actual points a user earned (running amount until last assignment)
-# Calculate upon completing an assignment; update scorecard!
-# If new session is initiated on same day, add to previous points
-def actual_points(user):
+# Calculate and add points earned for an assignment to scorecard
+def actual_points(user, assignment):
     
-    # Init container and store 'done' assignments
+    # Init container and store 'done' assignments and scorecard
     actual_points = 0
     done_lane = user.assignments.filter(status='e')
     
@@ -56,14 +41,15 @@ def actual_points(user):
         if assignment.on_time == True:
             temp = assignment.points * assignment.time_mult
             actual_points += temp
-        actual_points += assignment.points # add up points
+        else:
+            actual_points += assignment.points # add up points
     
     # if entire queue completed, apply queue multiplier
-    todays_plans = user.assignments.filter(status='c')
-    if len(todays_plans) == 0:
-        actual_points *= done_lane.count()
+    queue = user.assignments.filter(status='c')
+    if len(queue) == 0:
+        actual_points *= done_lane.count()    
     
     # Add points to day's current scores and save
-    scorecard = user.scorecards.get(date = datetime.date.today())
+    scorecard = user.scorecards.get(assignments = assignment)
     scorecard.actual += actual_points
     scorecard.save()

@@ -48,13 +48,12 @@
     {% for assignment in assignments %}
         <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+            <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
             <small>{{assignment.points}}pts</small>
             </div>
             <small class="mb-1">
-                Estimated Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat }}
-                {% if assignment.optional %}<br>(Optional){% endif %}
+                Est. Time: {{assignment.est_duration}}<br>
+                Time Multiplier: {{assignment.time_mult|floatformat}}
             </small>
         </a>
     {% endfor %}
@@ -64,7 +63,7 @@
 </div>
 
 <div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>Your Plans</h5><hr>
+<h5 class=center>This Session</h5><hr>
 {% if not commit|length %}
     <p><strong>Plan Your Session</strong></p>
     <small>
@@ -78,11 +77,11 @@
     {% for assignment in plans %}
     <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
         <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+          <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
           <small>{{assignment.points}}pts</small>
         </div>
         <small class="mb-1">
-            Estimated Time: {{assignment.est_duration}}<br>
+            Est. Time: {{assignment.est_duration}}<br>
             Time Multiplier: {{assignment.time_mult|floatformat }}
         </small>
     </a>
@@ -94,11 +93,11 @@
     {% for assignment in commit %}
     <a href =# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
         <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong></small>
+          <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
           <small>{{assignment.points}}pts</small>
         </div>
         <small class="mb-1">
-            Estimated Time: {{assignment.est_duration}}<br>
+            Est. Time: {{assignment.est_duration}}<br>
             Time Multiplier: {{assignment.time_mult|floatformat }}
         </small>
     </a>
