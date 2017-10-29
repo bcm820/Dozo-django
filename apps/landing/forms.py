@@ -12,12 +12,12 @@ class CreateUser(forms.ModelForm):
     password1 = forms.CharField(
         label='Password', widget=forms.PasswordInput, help_text="8 characters minimum")
     password2 = forms.CharField(
-        label='Confirm Password', widget=forms.PasswordInput, help_text="Must be an exact match for verification")
+        label='Confirm Password', widget=forms.PasswordInput, help_text="Must be an exact match")
 
     # Custom field labels / help text
     first_name = forms.CharField(help_text="3 characters minimum")
     username = forms.CharField(help_text="3 characters minimum")
-    last_name = forms.CharField(required=False, help_text="(Optional)")
+    last_name = forms.CharField(required=False, help_text="Optional")
     email = forms.EmailField(help_text="Must be valid format")
 
     # Set meta of form inputs to be User model
@@ -30,7 +30,7 @@ class CreateUser(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Your passwords are not matching.")
+            raise forms.ValidationError("Error: Passwords did not match.")
         return password2
 
     # Create user with hashed password

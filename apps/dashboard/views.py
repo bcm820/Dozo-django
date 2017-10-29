@@ -76,11 +76,44 @@ def dash(request):
 @require_POST
 def assignments(request):
 
-    if request.POST['track'] == 'py_fun':
-        py_fun1(request.user)
+    if request.POST['track'] == 'pyfun1':
+        pyfun1(request.user)
 
-    if request.POST['track'] == 'py_django_orm':
-        py_django_orm(request.user)
+    if request.POST['track'] == 'pyfun2':
+        pyfun2(request.user)
+
+    if request.POST['track'] == 'pyoop':
+        pyoop(request.user)
+
+    if request.POST['track'] == 'flask1':
+        flask1(request.user)
+
+    if request.POST['track'] == 'mysql':
+        mysql(request.user)
+
+    if request.POST['track'] == 'flask2':
+        flask2(request.user)
+
+    if request.POST['track'] == 'django':
+        django(request.user)
+
+    if request.POST['track'] == 'djangoorm':
+        djangoorm(request.user)
+
+    if request.POST['track'] == 'javafun':
+        javafun(request.user)
+
+    if request.POST['track'] == 'javaoop':
+        javaoop(request.user)
+
+    if request.POST['track'] == 'javaspring1':
+        javaspring1(request.user)
+
+    if request.POST['track'] == 'javaspringdata':
+        javaspringdata(request.user)
+
+    if request.POST['track'] == 'javaspring2':
+        javaspring2(request.user)
 
     return redirect(reverse('dashboard:dash'))
 

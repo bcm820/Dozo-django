@@ -1,45 +1,60 @@
 {% extends "landing/base.html" %}
-
 {% block content %}
 
-<h2>Login to <em>Dozo</em></h2>
+  <div class="jumbotron container-fluid col-md-8">
+    <h1><strong>Welcome to <em>Dozo</em></strong></h1> 
+    <h2>Dozo is a data-driven
+        <br>productivity & goal-targeting tool
+        <br>created to aid you in your journey to
+        <br>becoming a self-sufficient developer.
+    </h2>
+    <h2>Dozo can help you optimize
+      <br>your progress as developer by:</h2>
+    <h3>
+    <ul>
+      <li>Tracking and timing your work efficiency</li>
+      <li>Helping you settle into to a
+        <br>continuous flow of uninterrupted work</li>
+      <li>Quantifying your progress via a
+        <br>built-in points system</li>
+      <li>Much more...</li>
+    </ul>
+    </h3>
+  </div>
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-
-<p>
-    {{ form.username.label_tag }}<br>
-    {{ form.username }}
-</p>
-<p>
-    {{ form.password.label_tag }}<br>
-    {{ form.password }}
-</p>
-
-<p>
-    <button type="submit">Login</button>
-    <input type="hidden" name="next" value="{{ next }}" />
-    <button type="reset">Clear</button>
-</p>
-
-{% if form.errors %}
-<small style="color: red">Your username and password didn't match. Please try again.</small>
-{% endif %}
-
-</form>
-
-<!-- <p>
-    <a href="{% url 'password_reset' %}">Lost your password?</a>
-    <br>(Sorry, doesn't work yet)
-</p> -->
+  <div class=col-md-4>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <h4>
+      Featuring the following tracks from
+      <br>the Coding Dojo learning platform:
+      <br><br>
+      Python:
+      <ul>
+        <li>Fundamentals</li>
+        <li>Object-Oriented Programming</li>
+        <li>Flask</li>
+        <li>MySQL</li>
+        <li>Flask + MySQL</li>
+        <li>Django</li>
+        <li>Django ORM</li>
+      </ul>
+      <br>
+      Java:
+      <ul>
+        <li>Fundamentals</li>
+        <li>Object-Oriented Programming</li>
+        <li>Spring</li>
+        <li>Spring Data</li>
+        <li>Much more...</li>
+      </ul>
+    </h4>
+    <hr>
+  </div>
 
 {% endblock %}

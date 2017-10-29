@@ -30,7 +30,14 @@ class Assignment(models.Model):
         ('pyoop', 'Python OOP'),
         ('flask1', 'Flask Fundamentals'),
         ('mysql', 'MySQL'),
+        ('flask2', 'Flask with MySQL'),
         ('django', 'Django'),
+        ('djangoorm', 'Django ORM'),
+        ('javafun', 'Java Fundamentals'),
+        ('javaoop', 'Java OOP'),
+        ('javaspring1', 'Java Spring 1'),
+        ('javaspringdata', 'Java Spring Data'),
+        ('javaspring2', 'Java Spring 2'),
     )
 
     LANE = (

@@ -16,11 +16,11 @@ from dozo import settings
 # See forms.py for password confirmation validator
 def lenLessThanThree(value):
     if len(value) < 3:
-        raise ValidationError('This field requires 3 characters minimum.')
+        raise ValidationError('Error: Word length')
 
 def lenLessThanEight(value):
     if len(value) < 8:
-        raise ValidationError('Your password must be 8 characters minimum.')
+        raise ValidationError('Error: Word length')
 
 
 # Manager for user creation

@@ -30,8 +30,9 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'landing.User'
 
-# Redirect to dashboard after login (Default redirects to /accounts/profile/)
+# Auth redirects
 LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 # To test password reset system (since not using email server)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -41,6 +42,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INSTALLED_APPS = [
     'apps.landing',
     'apps.dashboard',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

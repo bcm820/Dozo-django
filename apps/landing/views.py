@@ -18,16 +18,11 @@ from forms import CreateUser
 
 # Home
 def home(request):
-    return render(request, 'landing/index.html')
-
-
-# Registration form
-def join(request):
-
     # Render registration form created in forms.py
     form = { "form": CreateUser() }
-    return render(request, 'landing/join.html', form)
 
+    return render(request, 'landing/index.html', form)
+    
 
 @require_POST
 def register(request):
@@ -47,7 +42,7 @@ def register(request):
     # Re-render the form with invalid data passed in
     else: # Django will take care of rendering validations!
         form = { "form": CreateUser(request.POST) }
-        return render(request, 'landing/join.html', form)
+        return render(request, 'landing/index.html', form)
 
 
 def logout_user(request):

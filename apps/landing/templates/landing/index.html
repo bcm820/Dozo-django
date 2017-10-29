@@ -1,21 +1,57 @@
 {% extends "landing/base.html" %}
 {% block content %}
 
-  <h2>Welcome to <em>Dozo</em></h2>
+  <div class="jumbotron container-fluid col-md-8">
+    <h1><strong>Welcome<br>
+      to <em>Dozo</em></strong></h1> 
+    <h2>Dozo is a data-driven
+      <br>productivity & goal-targeting tool
+      <br>created to aid you in your journey
+      <br>to becoming a self-sufficient developer.
+    </h2>
+    <h2>Dozo can help you optimize
+      <br>your progress as developer by:</h2>
+    <h3>
+    <ul>
+      <li>Tracking and timing your work efficiency</li>
+      <li>Promoting a continuous flow of uninterrupted work</li>
+      <li>Quantifying your groth via a built-in points system</li>
+      <li>Much more...</li>
+    </ul>
+    </h3>
+  </div>
 
-    <p>Welcome to <em>Dozo</em>, a data-driven productivity and goal targeting tool.
-      <br>Here's how you can optimize your growth as a developer with <em>Dozo</em>:</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  
+  <div class=col-md-4>
 
-  <h2>How <em>Dozo</em> Works</h2>
+    {% load i18n widget_tweaks %}
+    
+    <form method=post action=/register/ class="form" id="register">
+    {% csrf_token %}
 
-  <p>To be an efficient developer, you need focus. With Dozo, you can:</p>
+    {% if user.is_authenticated %}
+    <h3>You've already joined <em>Dozo!</em></h3>
+    <h4>Create an account for a friend?</h4>
+    {% else %}
+    <h2>Join <em>Dozo</em></h2>
+    {% endif %}
 
-  <ul>
-      <li>Track and time your Coding Dojo assignments</li>
-      <li>Have your own personal assignment dashboard</li>
-      <li>Interact with other users </li>
-  </ul>
+    {% for field in form %}
+        <p>
+        <small>{{ field.label_tag }}</small> <small class=text-muted>({{ field.help_text }})</small>
+        {{ field|attr:"class:form-control input-sm"}}
+        {% for error in field.errors %}
+        <small style="color: red">{{ error }}</small>
+        {% endfor %}
+        </p>
+    {% endfor %}
+    <br>
+    <button type="submit" class="btn btn-primary">Join</button>
+    <button type="reset" class="btn btn-secondary">Clear</button>
 
-<p>&nbsp;</p>
+  </div>
 
+  
 {% endblock %}
