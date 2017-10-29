@@ -6,19 +6,19 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from models import Member
+from models import User
 
-# Admin form for creating new members. Includes all required fields
-class SuperMemberCreationForm(forms.ModelForm):
+# Admin form for creating new users. Includes all required fields
+class SuperUserCreationForm(forms.ModelForm):
 
     # Create password and confirmation fields to check
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput, help_text="8 characters min.")
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     last_name = forms.CharField(max_length=45, required=False, help_text="Optional")
 
-    # Set meta of form inputs to be Member model
+    # Set meta of form inputs to be user model
     class Meta:
-        model = Member
+        model = User
         fields = '__all__'
 
     # Check that the two password entries match
@@ -31,20 +31,20 @@ class SuperMemberCreationForm(forms.ModelForm):
 
     # Save the provided password in hashed format
     def save(self, commit=True):
-        member = super(MemberCreationForm, self).save(commit=False)
-        member.set_password(self.cleaned_data["password1"])
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
         if commit:
-            member.save()
-        return member
+            user.save()
+        return user
 
 
 # Admin form for updating users.  Replaces pw field with admin pw field.
-class SuperMemberChangeForm(forms.ModelForm):
+class SuperUserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
 
-    # Set meta of form inputs to be Member model
+    # Set meta of form inputs to be user model
     class Meta:
-        model = Member
+        model = User
         fields = '__all__'
 
     # Return initial value of password
@@ -52,24 +52,24 @@ class SuperMemberChangeForm(forms.ModelForm):
         return self.initial['password']
 
 
-class MemberAdmin(BaseUserAdmin):
+class UserAdmin(BaseUserAdmin):
 
     # The forms to add and change user instances
-    form = SuperMemberChangeForm
-    add_form = SuperMemberCreationForm
+    form = SuperUserChangeForm
+    add_form = SuperUserCreationForm
 
-    # Displays table of members and fields to filter by
+    # Displays table of users and fields to filter by
     list_display = ('username', 'first_name', 'last_name', 'email')
     list_filter = ('added', 'is_online')
 
-    # How to display the form when changing a member's info
+    # How to display the form when changing a user's info
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
 
-    # How to display the form when adding a member
+    # How to display the form when adding a user
     add_fieldsets = (
         (None, {
             'classes': ('wide',), # sets width of field display
@@ -81,7 +81,7 @@ class MemberAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 # Now register the new UserAdmin...
-admin.site.register(Member, MemberAdmin)
+admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

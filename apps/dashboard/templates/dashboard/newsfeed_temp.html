@@ -9,3 +9,24 @@
     {% endfor %}
 </p>
 {% endif %}
+
+
+
+
+{% for user in online_users %}
+{% if online_users|length == 1 %}
+    {{user.username}} (just you!)
+{% else %}
+    {{user.username}} ({{user.first_name}}) &nbsp;
+{% endif %}
+{% endfor %}
+
+
+
+<div>
+        <h6>
+        Welcome, <strong>{{request.user.first_name}}</strong>! Let's crush those assignments!<br>
+        <small>
+            You logged in on <strong>{{request.user.last_login}}</strong><br>
+    </h6>
+</div>

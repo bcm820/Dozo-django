@@ -2,11 +2,11 @@
 from __future__ import unicode_literals
 
 from django import forms
-from .models import Member
+from .models import User
 
 
 # Join Dozo
-class CreateMember(forms.ModelForm):
+class CreateUser(forms.ModelForm):
 
     # Create password and confirmation fields to check
     password1 = forms.CharField(
@@ -20,9 +20,9 @@ class CreateMember(forms.ModelForm):
     last_name = forms.CharField(required=False, help_text="(Optional)")
     email = forms.EmailField(help_text="Must be valid format")
 
-    # Set meta of form inputs to be Member model
+    # Set meta of form inputs to be User model
     class Meta:
-        model = Member
+        model = User
         fields = ('first_name', 'last_name', 'username', 'email')
 
     # Check that the two password entries match
@@ -35,8 +35,8 @@ class CreateMember(forms.ModelForm):
 
     # Create user with hashed password
     def save(self, commit=True):
-        member = super(CreateMember, self).save(commit=False)
-        member.set_password(self.cleaned_data["password1"])
+        user = super(CreateUser, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
         if commit:
-            member.save()
-        return member
+            user.save()
+        return user

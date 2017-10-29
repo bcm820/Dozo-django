@@ -2,35 +2,15 @@
 
 {% block content %}
 
-<div>
-    <h1 class='display-4 center'><em>Dozo</em></h3>
-        <p class=center>
-        Welcome, <strong>{{request.user.first_name}}</strong>! Let's crush those assignments!<br>
-        <small>
-            You logged in on <strong>{{request.user.last_login}}</strong><br>
-            <strong>Users online:</strong> 
-    {% for user in online_users %}
-        {% if online_users|length == 1 %}
-            {{user.username}} (just you!)
-        {% else %}
-            {{user.username}} ({{user.first_name}}) &nbsp;
-        {% endif %}
-    {% endfor %}
-        </small>
-        </p>
-</div>
-
 <div class=kanban>
 
-<div class="border border-top-0 border-bottom-0 lane">
-<h5 class=center>Your Assignments</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-th-list"></span> Your Assignments</h4><hr>
 
 {% if not assignments|length %}
 
-    <p><strong>Select a Track</strong></p>
-    <small>
-    <p>Select a track from the menu to work through your assignments.</p>
-    </small>
+    <p><strong>Step 1: Select a Track</strong></p>
+    <p>Select a track from the menu:</p>
 
     <form method=POST action="{% url 'dashboard:assignments' %}">
         <div class=form_group>{% csrf_token %}
@@ -39,24 +19,22 @@
                 <option value=py_django_orm>Python: Django</option>
             </select>
         </div>
-        <p><button type=submit class='btn btn-primary'>Ready!</button></p>    
+        <p><button type=submit class='btn btn-primary btm-md'>Ready!</button></p>    
     </form>
         
 {% elif assignments|length %}
 
     <div class="list-group">
     {% for assignment in assignments %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
+        <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong> 
-                {% if assignment.optional %}(Optional){% endif %}</small>
-            <small>{{assignment.points}}pts</small>
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
             </div>
             <small class="mb-1">
                 Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat }}
-            </small>
-        </a>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 
@@ -64,119 +42,137 @@
 
 </div>
 
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>This Session</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-edit"></span> This Session</h4><hr>
 
-{% if commit|length %}
-    <p><strong>Session List:</strong></p>
-{% endif %}
 {% if not commit|length and current|length %}
     <p><strong>Last One Left!</strong></p>
-    <small>
         <p>You're in the final stretch! After completing this assignment, you'll be able to see your scorecard for this session. Keep going!</p>
-    </small>
 {% elif not current|length %}
 
-<p><strong>You did it!</strong></p>
-<small>
-    <p>Great session, today! You worked really hard and learned a lot at the same time.
+{% if scorecard.on_time and done|length > 4 %}
+<p><strong>Woah! What a session!</strong></p>
+    <p>You clearly grapsed the material and worked hard get all your assignments done under the time estimate. Way to go! Work like you did this session every time and you'll be well on your way to becoming a self-sufficient developer.
         To start a new session, click this button.</p>
     <p><a href="{% url 'dashboard:archive' %}">
-        <button type=submit class='btn btn-primary'>Do More</button>
+        <button type=submit class='btn btn-primary btm-md'>Do More</button>
     </a></p>
-</small>
+{% else %}
+<p><strong>You did it!</strong></p>
+    <p>Great session! You got all your work done and learned a lot at the same time.
+        To start a new session, click this button.</p>
+    <p><a href="{% url 'dashboard:archive' %}">
+        <button type=submit class='btn btn-primary btm-md'>Do More</button>
+    </a></p>
+{% endif %}
 
 {% endif %}
 
     <div class="list-group">
     {% for assignment in commit %}
-    <a href =# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
-        <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong> 
-                {% if assignment.optional %}(Optional){% endif %}</small>
-          <small>{{assignment.points}}pts</small>
-        </div>
-        <small class="mb-1">
-            Est. Time: {{assignment.est_duration}}<br>
-            Time Multiplier: {{assignment.time_mult|floatformat }}
-        </small>
-    </a>
-
-{% endfor %}
-    <br>
-    </div>
-
-</div>
-
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>Currently Working On</h5><hr>
-
-{% if current|length %}
-
-    <div class="list-group">
-    {% for assignment in current %}
-        <a href=# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
+        <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong> 
-                {% if assignment.optional %}(Optional){% endif %}</small>
-            <small>{{assignment.points}}pts</small>
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
             </div>
             <small class="mb-1">
                 Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat }}
-            </small>
-        </a>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 
-    <small>
-        <p>You only have <strong>{{commit|length}}</strong>
-            assignment(s) left after this one. You got this!
-        </p>
-    </small>
+</div>
+
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-pushpin"></span> Currently Working On</h4><hr>
+
+{% if current|length %}
+
     <p><a href="{% url 'dashboard:go' %}">
-        <button type=submit class='btn btn-primary'>Dozo!</button>
+        <button type=submit class='btn btn-primary btm-sm btn-block'>Dozo!</button>
     </a></p>
+
+    <div class="list-group">
+    {% for assignment in current %}
+        <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
+            </div>
+            <small class="mb-1">
+                Est. Time: {{assignment.est_duration}}<br>
+                Started: {{assignment.start_time|time:"P"}} ({{assignment.start_time|timesince}} ago)<br>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small>
+        </a>
+    </div>
+    <strong><p>Users working on this assignment:</p></strong>
+    <ul>
+    {% for current in all_current %}
+    {% if current.pageid == assignment.pageid %}
+    {% if current.user == request.user %}
+    <li>{{current.user.username}} (you!)</li>
+    {% else %}
+    <li>{{current.user.username}} ({{current.user.first_name}})</li>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    </ul>
     
 {% else %}
 
-<p><strong>Here's your stats:</strong></p>
-<small>
+<p><strong>Assignment Summary</strong></p>
 
-{% for assignment in stats %}
-<p>
-    <strong>{{assignment.title}}</strong><br>
-    Start: {{assignment.start_time|date:"P"}}<br>
-    End: {{assignment.end_time|date:"P"}}<br>
-    Time: {{assignment.act_duration}}<br>
-    Time Est: {{assignment.est_duration}}<br>
-    {% if assignment.on_time %}
-    On time: Yes!<br>
-    {% else %}
-    On time: No<br>
-    {% endif %}
-</p>
-{% endfor %}
-</small>
-
+    <div class="list-group">
+    {% for assignment in stats %}
+    <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
+            </div>
+            <small class="mb-1">
+            Time: {{assignment.start_time|date:"P"}} - {{assignment.end_time|date:"P"}}<br>
+            Duration: {{assignment.start_time|timesince:assignment.end_time}} 
+            {% if assignment.on_time %}
+            (on time)<br>
+            {% endif %}
+            Score: {{assignment.actual|floatformat}} 
+            out of {{assignment.potential|floatformat}}
+            </small></a>
+    {% endfor %}
+    </div>
 
 {% endif %}
 </div>
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>Done!</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-check"></span>  Done!</h4><hr>
 
-<p><strong>Move Assignments Here</strong></p>
-<small>
-    <p>This is your goal. Move as many assignments as you can to this lane!</p>
-</small>
-    <div class="list-group">
-    <a class="list-group-item align-items-start">
+    <div class="list-group score">
+    <a class="list-group-item align-items-start score">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>Today's Stats</strong></small>
+            <p class="mb-1 score"><strong>Session Summary:</strong></p>
             </div>
-            <small class="mb-1">
-                Potential This Session: <big><strong>{{potential_points}}</strong></big><br>
-                Today's Total: <big><strong>{{actual_points}}</strong></big>
+            <small class="mb-1 score">
+                {% if current|length %}
+                <p>Assignments remaining: <big><strong>{{remaining}}</strong></big></p>
+                {% endif %}
+                <p>Started: <big><strong>{{scorecard.start|time:"P"}}</strong></big></p>
+                <p>Finished: <big><strong>
+                    {% if current|length %}
+                    Not yet
+                    {% else %}
+                    {{scorecard.end|time:"P"}}
+                    {% endif %}
+                </strong></big></p>
+                {% if not current|length %}
+                    <p>Duration: <big><strong>{{scorecard.start|timesince:scorecard.end}}{% if scorecard.on_time %}
+                     (on time){% endif %}</big></strong></p>
+                {% endif %}
+                <p>Score: <big><strong>
+                    {{scorecard.actual|floatformat}}</strong></big>
+                    out of <big><strong>{{scorecard.potential|floatformat}}</strong></big></p>
             </small>
         </a>
     </div>
@@ -184,17 +180,15 @@
 
     <div class="list-group">
     {% for assignment in done %}
-    <a href=# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
+        <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong> 
-                {% if assignment.optional %}(Optional){% endif %}</small>
-            <small>{{assignment.points}}pts</small>
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
             </div>
             <small class="mb-1">
                 Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat }}
-            </small>
-        </a>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 

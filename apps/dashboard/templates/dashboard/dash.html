@@ -2,35 +2,17 @@
 
 {% block content %}
 
-<div>
-    <h1 class='display-4 center'><em>Dozo</em></h3>
-        <p class=center>
-        Welcome, <strong>{{request.user.first_name}}</strong>! Let's crush those assignments!<br>
-        <small>
-            You logged in on <strong>{{request.user.last_login}}</strong><br>
-            <strong>Users online:</strong> 
-    {% for user in online_users %}
-        {% if online_users|length == 1 %}
-            {{user.username}} (just you!)
-        {% else %}
-            {{user.username}} ({{user.first_name}}) &nbsp;
-        {% endif %}
-    {% endfor %}
-        </small>
-        </p>
-</div>
-
 <div class=kanban>
 
-<div class="border border-top-0 border-bottom-0 lane">
-<h5 class=center>Your Assignments</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-th-list"></span> Your Assignments</h4><hr>
 
 {% if not assignments|length %}
 
-    <p><strong>Select a Track</strong></p>
-    <small>
-    <p>Select a track from the menu to work through your assignments.</p>
-    </small>
+    <p><strong>Step 1: Select a Track</strong></p>
+    
+    <p>Select a track from the menu:</p>
+    
 
     <form method=POST action="{% url 'dashboard:assignments' %}">
         <div class=form_group>{% csrf_token %}
@@ -39,114 +21,117 @@
                 <option value=py_django_orm>Python: Django</option>
             </select>
         </div>
-        <p><button type=submit class='btn btn-primary'>Ready!</button></p>    
+        <p><button type=submit class='btn btn-primary btn-md'>Ready!</button></p>    
     </form>
         
 {% elif assignments|length %}
 
     <div class="list-group">
     {% for assignment in assignments %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
-            <small>{{assignment.points}}pts</small>
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
             </div>
             <small class="mb-1">
                 Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}
-            </small>
-        </a>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 
 {% endif %}
 </div>
 
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>This Session</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-edit"></span> This Session</h4><hr>
 {% if not commit|length %}
-    <p><strong>Plan Your Session</strong></p>
-    <small>
-    <p>How many assignments can you finish? You'll earn points for each assignment. Plus, you can multiply those points by:</p>
-    <p>1) Completing assignments on time<br>
-        2) Completing all your assignments in one session</p>
-    </small>
+    <p><strong>Step 2: Plan Your Session</strong></p>
+    
+    <p>Click the assignments to add them to your session. You'll earn points for each assignment completed. There are also two ways to multiply your points:</p>
+    <p><strong>1. Time Multiplier</strong>: Multiplies each assignment's points if completed on time.</p>
+    <p><strong>2. Session Multiplier</strong>: Multiplies your total points by the total number of assignments if you beat the time challenge (total estimated time plus a bonus).</p>
+    <p>The more you complete within the given time, the greater the multiplier!</p>
+    <br>
 {% endif %}
 {% if plans|length %}
     <div class="list-group">
     {% for assignment in plans %}
-    <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
-        <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
-          <small>{{assignment.points}}pts</small>
-        </div>
-        <small class="mb-1">
-            Est. Time: {{assignment.est_duration}}<br>
-            Time Multiplier: {{assignment.time_mult|floatformat }}
-        </small>
-    </a>
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
+            </div>
+            <small class="mb-1">
+                Est. Time: {{assignment.est_duration}}<br>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 {% elif commit|length %}
-    <p><strong>Session List:</strong></p>
     <div class="list-group">
     {% for assignment in commit %}
-    <a href =# class="color{{assignment.points}} list-group-item list-group-item-action align-items-start">
-        <div class="d-flex w-100 justify-content-between">
-          <small class="mb-1"><strong>{{assignment.title}}</strong> {% if assignment.optional %}<br>(Optional){% endif %}</small>
-          <small>{{assignment.points}}pts</small>
-        </div>
-        <small class="mb-1">
-            Est. Time: {{assignment.est_duration}}<br>
-            Time Multiplier: {{assignment.time_mult|floatformat }}
-        </small>
-    </a>
+        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+            <p class="mb-1">
+                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
+            </div>
+            <small class="mb-1">
+                Est. Time: {{assignment.est_duration}}<br>
+                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+            </small></a>
     {% endfor %}
     </div>
 {% endif %}<br>
 
 </div>
 
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>Currently Working On</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-pushpin"></span> Currently Working On</h4><hr>
 {% if commit|length %}
-    <p><strong>Keep On Working</strong></p>
-    <small>
-        <p>Good job! Now it's time to work. When you click the button, the timer for your first assignment will start.</p>
-    </small>
-    <p><a href="{% url 'dashboard:go' %}"><button type=submit class='btn btn-primary'>Go!</button></a></p><br>
+    <p><strong>Step 3: Keep On Working</strong></p>
+    
+        <p>Good job! Now it's time to work!</p>
+        <p>When you click the button, the timer for your first assignment will start. Each time you press the button, a new timer will start for a new assignment.</p>
+    
+    <p><a href="{% url 'dashboard:go' %}"><button type=submit class='btn btn-primary btn-md'>Go!</button></a></p><br>
 {% endif %}
 {% if plans|length or not commit|length %}
-    <p><strong>Keep On Working</strong></p>
-    <small>
-        <p>Edit your plans by clicking the assignments again. When you're ready, click the button to commit to working throughout this session.</p>
-    </small>
+    <p><strong>Step 3: Keep On Working</strong></p>
+    
+        <p>After planning out your session, click the button to commit to working throughout this session.</p>
+    
 {% endif %}
-{% if not commit|length %}
-    <p><a href="{% url 'dashboard:commit' %}"><button type=submit class='btn btn-primary'>Set!</button></a></p>
+
+    <p><a href="{% url 'dashboard:commit' %}">
+{% if commit|length %} 
+{% elif not plans|length %}
+        <button type=submit class='btn btn-default btn-md disabled'>Set!</button>
+{% elif plans|length %}
+        <button type=submit class='btn btn-primary btn-md'>Set!&nbsp;<span class="badge">{{plans|length}}</span></button>
 {% endif %}
+    </a></p>
+
 
 </div>
-<div class="border border-top-0 border-bottom-0 border-left-0 lane">
-<h5 class=center>Done!</h5><hr>
+<div class="lane">
+<h4 class=center><span class="glyphicon glyphicon-check"></span>  Done!</h4><hr>
 
-<p><strong>Move Assignments Here</strong></p>
-<small>
-    <p>This is your goal. Move as many assignments as you can to this lane!</p>
-</small>
-    <div class="list-group">
-    <a class="list-group-item align-items-start">
+    <div class="list-group score">
+    <a class="list-group-item align-items-start score">
             <div class="d-flex w-100 justify-content-between">
-            <small class="mb-1"><strong>Potential Points</strong></small>
+            <p class="mb-1 score"><strong>Session Summary:</strong></p>
             </div>
-            <small class="mb-1">
+            <p class="mb-1 score">
                 {% if plans|length %}
                 Number of Assignments: <big><strong>{{plans|length}}</strong></big><br>
                 {% else %}
                 Number of Assignments: <big><strong>{{commit|length}}</strong></big><br>
                 {% endif %}
-                Potential Points: <big><strong>{{potential_points}}</strong></big>
-            </small>
+                Est. Time: <big><strong>{{duration}} +{{bonus}}</strong></big> bonus<br>
+                Time Challenge: <big><strong>{{challenge}}</strong></big><br>
+                Potential Score: <big><strong>{{potential}}</strong></big>
+            </p>
         </a>
     </div>
 

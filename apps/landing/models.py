@@ -24,32 +24,40 @@ def lenLessThanEight(value):
 
 
 # Manager for user creation
-class MemberManager(BaseUserManager):
+class UserManager(BaseUserManager):
 
     def create_user(self, username, first_name, email, password = None):
-        member = self.model(
+        user = self.model(
             username = username,
             first_name = first_name,
             email = self.normalize_email(email)
         )
-        member.set_password(password)
-        member.save(using = self._db)
-        return member
+        user.set_password(password)
+        user.save(using = self._db)
+        return user
 
     def create_superuser(self, username, first_name, email, password = None):
-        member = self.create_user(
+        user = self.create_user(
             username,
             first_name,
             email,
             password=password
         )
-        member.is_admin = True
-        member.save(using = self._db)
-        return member
+        user.is_admin = True
+        user.save(using = self._db)
+        return user
 
 
-# Create Member Model (replaces Django's auth.Model)
-class Member(AbstractBaseUser):
+# Create user Model (replaces Django's auth.Model)
+class User(AbstractBaseUser):
+    
+    STACKS = (
+        ('webfun', 'Web Fundamentals'),
+        ('python', 'Python'),
+        ('java', 'Java'),
+        ('mean', 'MEAN')
+    )
+    
     first_name = models.CharField(max_length=45, validators=[lenLessThanThree])
     last_name = models.CharField(max_length=45)
     username = models.CharField(max_length=45, unique=True, validators=[lenLessThanThree])
@@ -59,9 +67,11 @@ class Member(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
+    is_familiar = models.BooleanField(default=False)
+    current_stack = models.CharField(max_length=45, choices=STACKS)
 
-    # Instantiate MemberManager object
-    objects = MemberManager()
+    # Instantiate userManager object
+    objects = UserManager()
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'

@@ -12,8 +12,8 @@ from django.views.decorators.http import require_POST
 
 
 # Models and forms
-from models import Member
-from forms import CreateMember
+from models import User
+from forms import CreateUser
 
 
 # Home
@@ -25,7 +25,7 @@ def home(request):
 def join(request):
 
     # Render registration form created in forms.py
-    form = { "form": CreateMember() }
+    form = { "form": CreateUser() }
     return render(request, 'landing/join.html', form)
 
 
@@ -33,7 +33,7 @@ def join(request):
 def register(request):
 
     # Pass post data into the ModelForm to validate before saving
-    form = CreateMember(request.POST)
+    form = CreateUser(request.POST)
 
     # If valid, save and use post data to auto-login
     if form.is_valid():
@@ -46,11 +46,11 @@ def register(request):
         
     # Re-render the form with invalid data passed in
     else: # Django will take care of rendering validations!
-        form = { "form": CreateMember(request.POST) }
+        form = { "form": CreateUser(request.POST) }
         return render(request, 'landing/join.html', form)
 
 
-def logout_member(request):
+def logout_user(request):
 
     # Set offline status
     if request.user.is_online == True:

@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
 # Models and forms
-from ..landing.models import Member
+from ..landing.models import User
 from models import Assignment, Goal, Scorecard
 from calculations import *
 from assignments import *
@@ -28,20 +28,46 @@ def dash(request):
     if request.user.is_online == False:
         request.user.is_online = True
         request.user.save()
-
-    # run function to calculate total potential points
-    if request.user.assignments.filter(status='b').count() > 0:
-        potential = potential_points(request.user)
+    
+    # if not archived assignments, redirect to dash2
+    if request.user.assignments.filter(status='e').count() > 0:
+        return redirect(reverse('dashboard:dozo'))
     
     context = {
-        'online_users': Member.objects.filter(is_online=True),
+        'online_users': User.objects.filter(is_online=True),
+        'all_user_done': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
         'assignments': request.user.assignments.filter(status='a'),
         'plans': request.user.assignments.filter(status='b'),
         'commit': request.user.assignments.filter(status='c'),
         'current': request.user.assignments.filter(status='d'),
         'done': request.user.assignments.filter(status='e').order_by("-id")
-        'potential': potential
     }
+
+    # run function to calculate total potential points
+    if request.user.assignments.filter(status='b').count() > 0:
+        potential = potential_points(request.user)
+        context['potential'] = potential
+    elif request.user.assignments.filter(status='c').count() > 0:
+        potential = potential_points(request.user)
+        context['potential'] = potential
+    else:
+        context['potential'] = 0
+
+    # run function to calculate total est_duration and time challenge
+    if request.user.assignments.filter(status='b').count() > 0:
+        duration, bonus, challenge = time_challenge(request.user)
+        context['duration'] = duration
+        context['bonus'] = bonus
+        context['challenge'] = challenge
+    elif request.user.assignments.filter(status='c').count() > 0:
+        duration, bonus, challenge = time_challenge(request.user)
+        context['duration'] = duration
+        context['bonus'] = bonus
+        context['challenge'] = challenge
+    else:
+        context['duration'] = timedelta()
+        context['bonus'] = timedelta()
+        context['challenge'] = timedelta()
 
     return render(request, 'dashboard/dash.html', context)
 
@@ -51,13 +77,10 @@ def dash(request):
 def assignments(request):
 
     if request.POST['track'] == 'py_fun':
-        py_fun(request.user)
+        py_fun1(request.user)
 
     if request.POST['track'] == 'py_django_orm':
         py_django_orm(request.user)
-
-    for assignment in request.user.assignments.filter(status='a'):
-        assignment.potential = assignment.base_points * assignment.time_mult
 
     return redirect(reverse('dashboard:dash'))
 
@@ -99,19 +122,20 @@ def commit(request):
     for assignment in request.user.assignments.filter(status='b'):
         assignment.status = 'c'
         assignment.save()
-    
-    # create scorecard with timestamp to link to assignments
-    # store timestamp in session to query scorecard later
-    timestamp = timezone.now()
-    Scorecard.objects.create(member=request.user, timestamp=timestamp)
-    request.session['timestamp'] = timestamp
 
-    # timestamp assignments, add assignments to scorecard, update potential
-    scorecard = Scorecard.objects.get(timestamp=timestamp)
-    scorecard.potential = potential_points(request.user)
+    # get est_duration and challenge
+    duration, bonus, challenge = time_challenge(request.user)
+    
+    # create scoreboard and add assignments and calcs to it
+    Scorecard.objects.create(
+        user = request.user, 
+        potential = potential_points(request.user), 
+        est_duration = duration,
+        time_bonus = bonus,
+        time_challenge = challenge)
+    scorecard = request.user.scorecards.last()
     for assignment in request.user.assignments.filter(status='c'):
         scorecard.assignments.add(assignment)
-        assignment.timestamp = timestamp
         assignment.save()
 
     return redirect(reverse('dashboard:dash'))
@@ -120,20 +144,27 @@ def commit(request):
 # Start continuous work queue
 def go(request):
     
+    # If session start time not recorded, record
+    scorecard = request.user.scorecards.last()
+    if scorecard.start == None:
+        scorecard.start = timezone.now()
+        scorecard.save()
+    
     # query assignments in lanes
     # note: query stored in a variable stores as uniterable object
     commit = request.user.assignments.filter(status='c')
     current = request.user.assignments.filter(status='d')
     done = request.user.assignments.filter(status='e')
 
-    # if commit is empty (all assignments done), redirect to dash
+    # if all assignments done (after results), redirect to dashboard
     if request.user.assignments.filter(
         status='c').count() == 0 and request.user.assignments.filter(
-            status='d').count() == 0:
+        status='d').count() == 0:
+
         return redirect(reverse('dashboard:dash'))
 
     # if assignment just finished, update to done and log times
-    if request.user.assignments.filter(status='d').count() > 0:
+    if request.user.assignments.filter(status='d').count() == 1:
         done = request.user.assignments.get(status='d')
         done.status = 'e'
         done.end_time = timezone.now()
@@ -142,16 +173,24 @@ def go(request):
             done.on_time = True # update on_time bool
         done.save()
 
-        # add points to the scorecard for the session
-        actual_points(request.user, done)
+        # record session end time (update each assignment)
+        # update on-time bool
+        scorecard.end = timezone.now()
+        scorecard.act_duration = scorecard.end - scorecard.start
+        if scorecard.act_duration < scorecard.time_challenge:
+            scorecard.on_time = True
+        scorecard.save()
 
-    
+        # add points to the scorecard for the session
+        # calculate final score if session is done
+        actual_points(request.user)
+
     # if assignments in queue, start new assignment
     if request.user.assignments.filter(status='c').count() > 0:
-        for assignment in request.user.assignments.filter(status='c')[0:1]:
-            assignment.status = 'd'
-            assignment.start_time = timezone.now()
-            assignment.save()
+        start_new = request.user.assignments.filter(status='c').first()
+        start_new.status='d'
+        start_new.start_time = timezone.now()
+        start_new.save()
 
     return redirect(reverse('dashboard:dozo'))
 
@@ -161,13 +200,16 @@ def go(request):
 def dozo(request):
     
     context = {
-        'online_users': Member.objects.filter(is_online=True),
+        'all_current': Assignment.objects.filter(status='d'),
+        'all_user_done': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
+        'online_users': User.objects.filter(is_online=True),
         'assignments': request.user.assignments.filter(status='a'),
         'commit': request.user.assignments.filter(status='c'),
         'current': request.user.assignments.filter(status='d'),
         'done': request.user.assignments.filter(status='e').order_by("-id"),
         'stats': request.user.assignments.filter(status='e'),
-        'scorecard': Scorecard.objects.get(timestamp=request.session['timestamp'])
+        'scorecard': request.user.scorecards.last(),
+        'remaining': len(request.user.assignments.filter(status='c')|request.user.assignments.filter(status='d'))
     }
 
     return render(request, 'dashboard/dash2.html', context)

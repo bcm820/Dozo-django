@@ -1,17 +1,16 @@
 
+*{
+    /* outline: 1px solid red; */
+}
+
 .kanban{
-    padding: 20px;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
 }
 
-#center{
-    padding-left: 300px;
-}
-
 p{
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .center{
@@ -29,7 +28,7 @@ p{
 }
 
 body{
-    background: url("/static/landing/arches.png")
+    background: url("/static/landing/bgpattern.png")
 }
 
 .container{
@@ -52,7 +51,7 @@ body{
     background-color: rgb(245, 212, 212)
 }
 
-.scoring{
+.score{
     background: url("/static/landing/arches.png")
 }
 
