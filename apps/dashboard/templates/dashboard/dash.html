@@ -19,6 +19,17 @@
             <select name=track class=form-control placeholder=Python>
                 <option value=pyfun1>Python Fundamentals 1</option>
                 <option value=pyfun2>Python Fundamentals 2</option>
+                <option value=pyoop>Python OOP</option>
+                <option value=flask1>Flask Fundamentals</option>
+                <option value=mysql>MySQL</option>
+                <option value=flask2>Flask with MySQL</option>
+                <option value=django>Django</option>
+                <option value=djangoorm>Django ORM</option>
+                <option value=javafun>Java Fundamentals</option>
+                <option value=javaoop>Java OOP</option>
+                <option value=javaspring1>Java Spring 1</option>
+                <option value=javaspringdata>Java Spring Data</option>
+                <option value=javaspring2>Java Spring 2</option>
             </select>
         </div>
         <p><button type=submit class='btn btn-primary btn-md'>Ready!</button></p>    
@@ -26,17 +37,22 @@
         
 {% elif assignments|length %}
 
-    <div class="list-group">
+<a href="{% url 'dashboard:clear' %}" onclick="return confirm('Are you sure you want to delete these assignments? To confirm, click OK.');">
+    <button type=submit class='btn btn-default btn-sm btn-block'>Clear List</button>
+</a>
+
+    <div class="list-group"><br>
     {% for assignment in assignments %}
         <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 
@@ -51,35 +67,36 @@
     <p>Click the assignments to add them to your session. You'll earn points for each assignment completed. There are also two ways to multiply your points:</p>
     <p><strong>1. Time Multiplier</strong>: Multiplies each assignment's points if completed on time.</p>
     <p><strong>2. Session Multiplier</strong>: Multiplies your total points by the total number of assignments if you beat the time challenge (total estimated time plus a bonus).</p>
-    <p>The more you complete within the given time, the greater the multiplier!</p>
     <br>
 {% endif %}
 {% if plans|length %}
     <div class="list-group">
     {% for assignment in plans %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+        <a href="{% url 'dashboard:remfromplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 {% elif commit|length %}
     <div class="list-group">
     {% for assignment in commit %}
-        <a href="{% url 'dashboard:addtoplans' assignment.id %}" class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+        <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 {% endif %}<br>

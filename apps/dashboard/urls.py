@@ -5,6 +5,7 @@ urlpatterns = [
 
     url(r'^$', views.dash, name='dash'),
     url(r'^ready/$', views.assignments, name='assignments'),
+    url(r'^clear/$', views.clear, name='clear'),
     url(r'^add/(?P<id>\d+)/$', views.addtoplans, name='addtoplans'),
     url(r'^return/(?P<id>\d+)/$', views.remfromplans, name='remfromplans'),
     url(r'^set/$', views.commit, name='commit'),

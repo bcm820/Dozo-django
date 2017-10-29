@@ -23,7 +23,7 @@
         {% else %}
         <li><a href="{% url 'dashboard:dash' %}">Dashboard</a></li>
         {% endif %}
-        <li><a href=#>Newsfeed</a></li>
+        <li><a href=#>Leaderboard</a></li>
         {% endif %}
     </ul>
 
@@ -50,7 +50,15 @@
 	    </form>
 	</div></div></li></ul></li>
     {% else %}
-    <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
+    <li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a>
+	<ul id="login-dp" class="dropdown-menu tab">
+	<li><div class="row tab"><div class="col-md-12 tab">
+        <small>
+            <p>Logged in at {{request.user.last_login}} ({{request.user.last_login|timesince}} online)</p>
+            <p>{{user_assignments}} assignments in {{user_sessions}} sessions since {{request.user.added|date:"n/j/y"}}</p>
+            <p>More stats go here later</p>
+        </small><br>
+	</div></div></li></ul></li>
     <li><a href="{% url 'landing:logout_user' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
     {% endif %}
     </ul>
@@ -64,23 +72,18 @@
 </div>
 
 <div class=row>
-    <div class="col-md-4 text-center">
+    {% if user.is_authenticated %}
+    <div class="col-md-12">
     <small><span class="badge">{{online_users|length}}</span> users currently online</small>
     </div>
-
-    <div class="col-md-4 text-center">
-    <small>{% if user.is_authenticated %}Logged in at {{request.user.last_login}}</small>
-    </div>
-
-    <div class="col-md-4 text-center">
-    <span class="badge">{{all_user_done}}</span> assignments finished{% endif %}</small>
-    </div>
+    {% endif %}
 </div>
 
 <div class=row>&nbsp;</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
 </body>
 

@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 
 # Models and forms
 from ..landing.models import User
-from models import Assignment, Goal, Scorecard
+from models import Assignment, Session
 from calculations import *
 from assignments import *
 
@@ -35,7 +35,8 @@ def dash(request):
     
     context = {
         'online_users': User.objects.filter(is_online=True),
-        'all_user_done': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
+        'user_assignments': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
+        'user_sessions': request.user.sessions.all().count(),
         'assignments': request.user.assignments.filter(status='a'),
         'plans': request.user.assignments.filter(status='b'),
         'commit': request.user.assignments.filter(status='c'),
@@ -70,6 +71,7 @@ def dash(request):
         context['challenge'] = timedelta()
 
     return render(request, 'dashboard/dash.html', context)
+
 
 
 # Add Assignments
@@ -133,6 +135,16 @@ def addtoplans(request, id):
     return redirect(reverse('dashboard:dash'))
 
 
+# Clear assignments list
+def clear(request):
+    if request.user.assignments.filter(status='a').count() == 0:
+        return redirect(reverse('dashboard:dash'))
+    else:
+        for assignment in request.user.assignments.filter(status='a'):
+            assignment.delete()
+        return redirect(reverse('dashboard:dash'))
+
+
 # Assignments <- Plans
 def remfromplans(request, id):
     
@@ -142,6 +154,7 @@ def remfromplans(request, id):
     plan.save()
 
     return redirect(reverse('dashboard:dash'))
+
 
 
 # Commit Plans
@@ -160,15 +173,15 @@ def commit(request):
     duration, bonus, challenge = time_challenge(request.user)
     
     # create scoreboard and add assignments and calcs to it
-    Scorecard.objects.create(
+    Session.objects.create(
         user = request.user, 
         potential = potential_points(request.user), 
         est_duration = duration,
         time_bonus = bonus,
         time_challenge = challenge)
-    scorecard = request.user.scorecards.last()
+    session = request.user.sessions.last()
     for assignment in request.user.assignments.filter(status='c'):
-        scorecard.assignments.add(assignment)
+        session.assignments.add(assignment)
         assignment.save()
 
     return redirect(reverse('dashboard:dash'))
@@ -178,10 +191,10 @@ def commit(request):
 def go(request):
     
     # If session start time not recorded, record
-    scorecard = request.user.scorecards.last()
-    if scorecard.start == None:
-        scorecard.start = timezone.now()
-        scorecard.save()
+    session = request.user.sessions.last()
+    if session.start == None:
+        session.start = timezone.now()
+        session.save()
     
     # query assignments in lanes
     # note: query stored in a variable stores as uniterable object
@@ -208,11 +221,11 @@ def go(request):
 
         # record session end time (update each assignment)
         # update on-time bool
-        scorecard.end = timezone.now()
-        scorecard.act_duration = scorecard.end - scorecard.start
-        if scorecard.act_duration < scorecard.time_challenge:
-            scorecard.on_time = True
-        scorecard.save()
+        session.end = timezone.now()
+        session.act_duration = session.end - session.start
+        if session.act_duration < session.time_challenge:
+            session.on_time = True
+        session.save()
 
         # add points to the scorecard for the session
         # calculate final score if session is done
@@ -234,14 +247,15 @@ def dozo(request):
     
     context = {
         'all_current': Assignment.objects.filter(status='d'),
-        'all_user_done': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
+        'user_assignments': len(request.user.assignments.filter(status='e')|request.user.assignments.filter(status='f')),
+        'user_sessions': request.user.sessions.all().count(),
         'online_users': User.objects.filter(is_online=True),
         'assignments': request.user.assignments.filter(status='a'),
         'commit': request.user.assignments.filter(status='c'),
         'current': request.user.assignments.filter(status='d'),
         'done': request.user.assignments.filter(status='e').order_by("-id"),
         'stats': request.user.assignments.filter(status='e'),
-        'scorecard': request.user.scorecards.last(),
+        'session': request.user.sessions.last(),
         'remaining': len(request.user.assignments.filter(status='c')|request.user.assignments.filter(status='d'))
     }
 

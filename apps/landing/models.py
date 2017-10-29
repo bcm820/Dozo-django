@@ -51,13 +51,6 @@ class UserManager(BaseUserManager):
 # Create user Model (replaces Django's auth.Model)
 class User(AbstractBaseUser):
     
-    STACKS = (
-        ('webfun', 'Web Fundamentals'),
-        ('python', 'Python'),
-        ('java', 'Java'),
-        ('mean', 'MEAN')
-    )
-    
     first_name = models.CharField(max_length=45, validators=[lenLessThanThree])
     last_name = models.CharField(max_length=45)
     username = models.CharField(max_length=45, unique=True, validators=[lenLessThanThree])
@@ -68,7 +61,6 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
     is_familiar = models.BooleanField(default=False)
-    current_stack = models.CharField(max_length=45, choices=STACKS)
 
     # Instantiate userManager object
     objects = UserManager()

@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Import models from Django
 from django.db import models
 from ..landing.models import User
 
-# Import time ops
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
-class Scorecard(models.Model):
-    user = models.ForeignKey(User, related_name="scorecards", on_delete=models.CASCADE)
+class Session(models.Model):
+    user = models.ForeignKey(User, related_name="sessions", on_delete=models.CASCADE)
     potential = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     actual = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     start = models.DateTimeField(default=None, blank=True, null=True)
@@ -50,7 +48,7 @@ class Assignment(models.Model):
     )
 
     user = models.ForeignKey(User, related_name="assignments", on_delete=models.CASCADE)
-    scorecard = models.ForeignKey(Scorecard, related_name="assignments", blank=True, null=True)
+    session = models.ForeignKey(Session, related_name="assignments", blank=True, null=True)
     track = models.CharField(max_length=45, choices=TRACKS)
     status = models.CharField(max_length=45, choices=LANE, default='a')
     title = models.CharField(max_length=45)
@@ -60,7 +58,7 @@ class Assignment(models.Model):
     # measurements for calculations
     base_points = models.IntegerField()
     time_mult = models.DecimalField(max_digits=3, decimal_places=1)
-    est_duration = models.DurationField()
+    est_duration = models.DurationField(default=timedelta())
 
     # to update via events
     potential = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -71,17 +69,3 @@ class Assignment(models.Model):
     actual = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
 
 
-class Goal(models.Model): # goals persist until done
-    
-    GOALS = (
-        ('c', 'commit'),
-        ('d', 'current'),
-        ('e', 'done'),
-        ('f', 'display')
-    )
-    
-    user = models.ForeignKey(User, related_name="goals", on_delete=models.CASCADE)
-    desc = models.CharField(max_length=200)
-    status = models.CharField(max_length=45, choices=GOALS)
-    started = models.DateTimeField(auto_now_add=True)
-    completed = models.DateTimeField(blank=True, null=True)

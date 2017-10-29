@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 # Import models from Django
 from django.db import models
-from models import Assignment, Goal, Scorecard
+from models import Assignment, Session
 
 # Import time ops
 from datetime import timedelta
@@ -75,6 +75,6 @@ def actual_points(user):
         actual_points *= done_lane.count()    
     
     # Add points to current scores and save
-    scorecard = user.scorecards.last()
-    scorecard.actual = actual_points
-    scorecard.save()
+    session = user.sessions.last()
+    session.actual = actual_points
+    session.save()

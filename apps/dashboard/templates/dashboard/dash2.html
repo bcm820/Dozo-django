@@ -15,8 +15,19 @@
     <form method=POST action="{% url 'dashboard:assignments' %}">
         <div class=form_group>{% csrf_token %}
             <select name=track class=form-control>
-                <option value=py_fun>Python Fundamentals</option>
-                <option value=py_django_orm>Python: Django</option>
+                <option value=pyfun1>Python Fundamentals 1</option>
+                <option value=pyfun2>Python Fundamentals 2</option>
+                <option value=pyoop>Python OOP</option>
+                <option value=flask1>Flask Fundamentals</option>
+                <option value=mysql>MySQL</option>
+                <option value=flask2>Flask with MySQL</option>
+                <option value=django>Django</option>
+                <option value=djangoorm>Django ORM</option>
+                <option value=javafun>Java Fundamentals</option>
+                <option value=javaoop>Java OOP</option>
+                <option value=javaspring1>Java Spring 1</option>
+                <option value=javaspringdata>Java Spring Data</option>
+                <option value=javaspring2>Java Spring 2</option>
             </select>
         </div>
         <p><button type=submit class='btn btn-primary btm-md'>Ready!</button></p>    
@@ -24,17 +35,22 @@
         
 {% elif assignments|length %}
 
+<a href="{% url 'dashboard:clear' %}" onclick="return confirm('Are you sure you want to clear this list?');">
+    <button type=submit class='btn btn-default btn-sm btn-block'>Clear List</button>
+</a>
+ 
     <div class="list-group">
     {% for assignment in assignments %}
         <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 
@@ -47,10 +63,10 @@
 
 {% if not commit|length and current|length %}
     <p><strong>Last One Left!</strong></p>
-        <p>You're in the final stretch! After completing this assignment, you'll be able to see your scorecard for this session. Keep going!</p>
+        <p>You're in the final stretch! After completing this assignment, you'll be able to see your scores for this session. Keep going!</p>
 {% elif not current|length %}
 
-{% if scorecard.on_time and done|length > 4 %}
+{% if session.on_time and done|length > 4 %}
 <p><strong>Woah! What a session!</strong></p>
     <p>You clearly grapsed the material and worked hard get all your assignments done under the time estimate. Way to go! Work like you did this session every time and you'll be well on your way to becoming a self-sufficient developer.
         To start a new session, click this button.</p>
@@ -71,14 +87,15 @@
     <div class="list-group">
     {% for assignment in commit %}
         <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 
@@ -96,17 +113,19 @@
     <div class="list-group">
     {% for assignment in current %}
         <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Started: {{assignment.start_time|time:"P"}} ({{assignment.start_time|timesince}} ago)<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)<br>
+                Started: {{assignment.start_time|time:"P"}}
+                ({{assignment.start_time|timesince}} ago)<br>
             </small>
+            </div>
         </a>
     </div>
+
     <strong><p>Users working on this assignment:</p></strong>
     <ul>
     {% for current in all_current %}
@@ -123,24 +142,26 @@
     
 {% else %}
 
-<p><strong>Assignment Summary</strong></p>
+    <div class="list-group">
+    <a class="list-group-item score">
+        <p><strong>Assignment Summary:</strong></p>
+    </a>
+    </div>
 
     <div class="list-group">
     {% for assignment in stats %}
     <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-            Time: {{assignment.start_time|date:"P"}} - {{assignment.end_time|date:"P"}}<br>
-            Duration: {{assignment.start_time|timesince:assignment.end_time}} 
-            {% if assignment.on_time %}
-            (on time)<br>
-            {% endif %}
-            Score: {{assignment.actual|floatformat}} 
-            out of {{assignment.potential|floatformat}}
-            </small></a>
+                {{assignment.start_time|date:"P"}} - {{assignment.end_time|date:"P"}} ({{assignment.start_time|timesince:assignment.end_time}})<br>
+                Score: {{assignment.actual|floatformat}} 
+                out of {{assignment.potential|floatformat}} 
+                {% if assignment.on_time %}(on time){% endif %}
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
 
@@ -158,44 +179,46 @@
                 {% if current|length %}
                 <p>Assignments remaining: <big><strong>{{remaining}}</strong></big></p>
                 {% endif %}
-                <p>Started: <big><strong>{{scorecard.start|time:"P"}}</strong></big></p>
+                <p>Started: <big><strong>{{session.start|time:"P"}}</strong></big></p>
                 <p>Finished: <big><strong>
                     {% if current|length %}
                     Not yet
                     {% else %}
-                    {{scorecard.end|time:"P"}}
+                    {{session.end|time:"P"}}
                     {% endif %}
                 </strong></big></p>
                 {% if not current|length %}
-                    <p>Duration: <big><strong>{{scorecard.start|timesince:scorecard.end}}{% if scorecard.on_time %}
+                    <p>Duration: <big><strong>{{session.start|timesince:session.end}}{% if session.on_time %}
                      (on time){% endif %}</big></strong></p>
                 {% endif %}
                 <p>Score: <big><strong>
-                    {{scorecard.actual|floatformat}}</strong></big>
-                    out of <big><strong>{{scorecard.potential|floatformat}}</strong></big></p>
+                    {{session.actual|floatformat}}</strong></big>
+                    out of <big><strong>{{session.potential|floatformat}}</strong></big></p>
             </small>
         </a>
     </div>
 
-
+{% if current|length %}
     <div class="list-group">
     {% for assignment in done %}
         <a href=# class="color{{assignment.base_points}} list-group-item list-group-item-action align-items-start">
-            <div class="d-flex w-100 justify-content-between">
-            <p class="mb-1">
-                <strong>{{assignment.title}}</strong> <small>({{assignment.base_points}} pts)</small></p>
-            </div>
+            <div class="mb-1">
+                <strong>{{assignment.title}}</strong> 
+                <small>({{assignment.base_points}} pts)</small><br>
             <small class="mb-1">
-                Est. Time: {{assignment.est_duration}}<br>
-                Time Multiplier: {{assignment.time_mult|floatformat}}<br>
-            </small></a>
+                Est. Time: {{assignment.est_duration}} 
+                ({{assignment.time_mult|floatformat}} mult.)<br>
+                {{assignment.start_time|time:"P"}} - {{assignment.end_time|time:"P"}} 
+                ({{assignment.start_time|timesince:assignment.end_time}})
+            </small>
+            </div>
+        </a>
     {% endfor %}
     </div>
+{% endif %}
+</div>
 
 </div>
 
-
-
-</div>
 
 {% endblock %}

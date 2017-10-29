@@ -72,6 +72,10 @@ body{
     background: url("/static/landing/arches.png")
 }
 
+.tab{
+    background: url("/static/landing/scribble.png")
+}
+
 
 /*
 Navbar CSS
