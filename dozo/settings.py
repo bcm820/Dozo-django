@@ -47,6 +47,12 @@ def find_or_create_secret_key():
 SECRET_KEY = find_or_create_secret_key()
 
 
+# SESSION SETTINGS FOR HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
