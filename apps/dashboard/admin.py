@@ -12,7 +12,7 @@ class AssignmentAdmin(admin.ModelAdmin):
 
     search_fields = ('user',)
     ordering = ('status',)
-    filter_horizontal = ('status',)
+    filter_horizontal = ()
 
 class SessionAdmin(admin.ModelAdmin):
 
@@ -21,7 +21,7 @@ class SessionAdmin(admin.ModelAdmin):
 
     search_fields = ('user',)
     ordering = ('act_duration',)
-    filter_horizontal = ('on_time',)
+    filter_horizontal = ()
 
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(Session, SessionAdmin)
