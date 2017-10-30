@@ -7,29 +7,21 @@ from models import Assignment, Session
 
 class AssignmentAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'status', 'potential', 'actual')
-    list_filter = ('user', 'status')
+    list_display = ('user', 'status', 'track', 'act_duration', 'on_time')
+    list_filter = ('user', 'status', 'track', 'act_duration', 'on_time')
 
-    # edit info
-    # fieldsets = (
-    #     (None, {'fields': ('username', 'password')}),
-    #     ('Personal', {'fields': ('first_name', 'last_name', 'email')}),
-    #     ('Permissions', {'fields': ('is_admin',)}),
-    # )
-
-    # add info
-    # add_fieldsets = (
-    #     (None, {
-    #         'classes': ('wide',), # sets width of field display
-    #         'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
-    #     ),
-    # )
-    # search_fields = ('email',)
-    # ordering = ('email',)
-    # filter_horizontal = ()
+    search_fields = ('user',)
+    ordering = ('status',)
+    filter_horizontal = ('status',)
 
 class SessionAdmin(admin.ModelAdmin):
-    pass
+
+    list_display = ('user', 'act_duration', 'on_time')
+    list_filter = ('user', 'act_duration', 'on_time')
+
+    search_fields = ('user',)
+    ordering = ('act_duration',)
+    filter_horizontal = ('on_time',)
 
 admin.site.register(Assignment, AssignmentAdmin)
 admin.site.register(Session, SessionAdmin)

@@ -60,7 +60,6 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
-    is_familiar = models.BooleanField(default=False)
 
     # Instantiate userManager object
     objects = UserManager()
