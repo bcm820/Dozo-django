@@ -33,7 +33,7 @@ def register(request):
     # If valid, save and use post data to auto-login
     if form.is_valid():
         form.save()
-        reg_username = form.cleaned_data.get('username')
+        username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
         login(request, user)

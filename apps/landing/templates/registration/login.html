@@ -31,10 +31,10 @@
     {% load i18n widget_tweaks %}
     <form method=post action=/register/ class="form" id="register">
     {% csrf_token %}
-    <h2>Join <em>Dozo</em></h2>
+    <h2>Login to <em>Dozo</em></h2>
     {% for field in form %}
         <p>
-        <small>{{ field.label_tag }}</small> <small class=text-muted>({{ field.help_text }})</small>
+        <small>{{ field.label_tag }}</small> <small class=text-muted>{{ field.help_text }}</small>
         {{ field|attr:"class:form-control input-sm"}}
         {% for error in field.errors %}
         <small style="color: red">{{ error }}</small>
