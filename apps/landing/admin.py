@@ -59,7 +59,13 @@ class UserAdmin(BaseUserAdmin):
     add_form = SuperUserCreationForm
 
     # Displays table of users and fields to filter by
-    list_display = ('username', 'first_name', 'last_name', 'email')
+    list_display = (
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        'added'
+    )
     list_filter = ('added', 'is_online')
 
     # How to display the form when changing a user's info

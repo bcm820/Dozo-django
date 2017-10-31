@@ -7,8 +7,20 @@ from models import Assignment, Session
 
 class AssignmentAdmin(admin.ModelAdmin):
 
-    list_display = ('user', 'status', 'track', 'act_duration', 'on_time')
-    list_filter = ('user', 'status', 'track', 'act_duration', 'on_time')
+    list_display = (
+        'title',
+        'user',
+        'end_time',
+        'act_duration',
+        'session',
+        'on_time'
+    )
+    list_filter = (
+        'user',
+        'status',
+        'track',
+        'on_time'
+    )
 
     search_fields = ('user',)
     ordering = ('status',)
@@ -16,8 +28,17 @@ class AssignmentAdmin(admin.ModelAdmin):
 
 class SessionAdmin(admin.ModelAdmin):
 
-    list_display = ('user', 'act_duration', 'on_time')
-    list_filter = ('user', 'act_duration', 'on_time')
+    list_display = (
+        'start',
+        'end',
+        'user',
+        'act_duration',
+        'on_time'
+    )
+    list_filter = (
+        'user',
+        'on_time'
+    )
 
     search_fields = ('user',)
     ordering = ('act_duration',)
