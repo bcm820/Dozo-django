@@ -541,31 +541,26 @@ def javaspring1(user):
 
     Assignment.objects.create(
         user=user, track='javaspring1', pageid='javaspring105',
-        title = "Display Date", base_points = 1,
-        est_duration=timedelta(hours=1), time_mult = 2)
-
-    Assignment.objects.create(
-        user=user, track='javaspring1', pageid='javaspring106',
         title = "Hello Human", base_points = 1,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
-        user=user, track='javaspring1', pageid='javaspring107',
+        user=user, track='javaspring1', pageid='javaspring106',
         title = "Dojo Survey", base_points = 2,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
-        user=user, track='javaspring1', pageid='javaspring108',
+        user=user, track='javaspring1', pageid='javaspring107',
         title = "Ninja Gold Game", base_points = 3,
         est_duration=timedelta(hours=3), time_mult = 4)
 
     Assignment.objects.create(
-        user=user, track='javaspring1', pageid='javaspring109',
+        user=user, track='javaspring1', pageid='javaspring108',
         title = "Learning Platform", base_points = 4,
         est_duration=timedelta(hours=3), time_mult = 4)
 
     Assignment.objects.create(
-        user=user, track='javaspring1', pageid='javaspring110',
+        user=user, track='javaspring1', pageid='javaspring109',
         title = "The Code", base_points = 1,
         est_duration=timedelta(minutes=30), time_mult = 1.5)
 
