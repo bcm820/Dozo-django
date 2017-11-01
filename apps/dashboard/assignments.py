@@ -536,7 +536,7 @@ def javaspring1(user):
 
     Assignment.objects.create(
         user=user, track='javaspring1', pageid='javaspring104',
-        title = "Display Date", base_points = 1,
+        title = "Counter", base_points = 1,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
