@@ -227,7 +227,7 @@ def go(request):
         # (to account for 1 minute rule)
         session.end = timezone.now()
         session.act_duration = session.end - session.start
-        amt = session.assignments.count()
+        amt = len(session.assignments)
         if session.act_duration < timedelta(minutes=amt)
             session.act_duration = timedelta(minutes=amt)
         if session.act_duration < session.time_challenge:
