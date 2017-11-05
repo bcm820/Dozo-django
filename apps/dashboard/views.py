@@ -35,7 +35,7 @@ def dash(request):
         return redirect(reverse('dashboard:dozo'))
 
     # if still in session, redirect to dash2
-    if request.user.assignments.filter(status='c').count() > 0:
+    if request.user.assignments.filter(status='d').count() > 0:
         return redirect(reverse('dashboard:dozo'))
     
     context = {
