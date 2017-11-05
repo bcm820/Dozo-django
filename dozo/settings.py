@@ -55,9 +55,9 @@ SESSION_COOKIE_AGE = 3600 * 12 # 12hrs
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['54.147.131.4','localhost']
+ALLOWED_HOSTS = ['localhost']
 
 AUTH_USER_MODEL = 'landing.User'
 
@@ -118,12 +118,24 @@ WSGI_APPLICATION = 'dozo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dozodb',
+        'USER': 'admin',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
+
 
 
 # Password validation
