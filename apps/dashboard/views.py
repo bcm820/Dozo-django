@@ -33,6 +33,10 @@ def dash(request):
     # if not archived assignments, redirect to dash2
     if request.user.assignments.filter(status='e').count() > 0:
         return redirect(reverse('dashboard:dozo'))
+
+    # if still in session, redirect to dash2
+    if request.user.assignments.filter(status='c').count() > 0:
+        return redirect(reverse('dashboard:dozo'))
     
     context = {
         'online_users': User.objects.filter(is_online=True),

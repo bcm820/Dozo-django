@@ -18,6 +18,9 @@ from forms import CreateUser
 
 # Home
 def home(request):
+    if request.user.is_online == True:
+        return redirect(reverse('dashboard:dash'))
+    
     # Render registration form created in forms.py
     form = { "form": CreateUser() }
 
