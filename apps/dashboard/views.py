@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 
 # Models and forms
 from ..landing.models import User
+from ..newsfeed.models import Scorecard, Event
 from models import Assignment, Session
 from calculations import *
 from assignments import *
@@ -217,6 +218,8 @@ def go(request):
         done.act_duration = done.end_time - done.start_time
         if done.act_duration < done.est_duration:
             done.on_time = True # update on_time bool
+        if done.act_duration < timedelta(minutes=1):
+            done.act_duration = timedelta(minutes=1)
         done.save()
 
         # record session end time (update each assignment)
@@ -265,9 +268,12 @@ def dozo(request):
 # Done -> Display
 def archive(request):
     
-    # move assignment to plans lane by updating status field
+    # move assignments to 'display' status
     for assignment in Assignment.objects.filter(status='e'):
         assignment.status = 'f'
         assignment.save()
+
+    # update scorecard
+    calc_scorecard(request.user)
 
     return redirect(reverse('dashboard:dash'))

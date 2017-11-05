@@ -1,59 +1,84 @@
-{% extends "landing/base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    {% block title %}<title>Dozo</title>{% endblock %}
+    <meta charset=utf-8>
+    <meta name=viewport content=width=device-width, initial-scale=1>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {% load static %}
+    <link rel=stylesheet href={% static 'landing/style.css' %}>
+</head>
+<body>
+<div class=container>
 
-  <div class="jumbotron container-fluid col-md-8">
-    <h1><strong>Welcome<br>
-      to <em>Dozo</em></strong></h1> 
-    <h2>Dozo is a data-driven
-      <br>productivity & goal-targeting tool
-      <br>created to aid you in your journey
-      <br>to becoming a self-sufficient developer.
-    </h2>
-    <h2>Dozo can help you optimize
-      <br>your progress as developer by:</h2>
-    <h3>
-    <ul>
-      <li>Tracking and timing your work efficiency</li>
-      <li>Promoting a continuous flow of uninterrupted work</li>
-      <li>Quantifying your growth via a built-in points system</li>
-      <li>Much more...</li>
+<nav class="navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href='{% url 'landing:home' %}' class="navbar-brand">Dozo</a>
+    </div>
     </ul>
-    </h3>
   </div>
+</nav>
 
-  <p>&nbsp;</p>
-  <p>&nbsp;</p>
-  
-  <div class=col-md-4>
+<div class=row>
+<div class=col-md-12>
 
-    <p>&nbsp;</p>
-    <hr>
-    <h4>
-      Featuring the following tracks from
-      <br>the Coding Dojo learning platform:
-      <br><br>
-      Python:
-      <ul>
-        <li>Fundamentals</li>
-        <li>Object-Oriented Programming</li>
-        <li>Flask</li>
-        <li>MySQL</li>
-        <li>Flask + MySQL</li>
-        <li>Django</li>
-        <li>Django ORM</li>
-      </ul>
-      <br>
-      Java:
-      <ul>
-        <li>Fundamentals</li>
-        <li>Object-Oriented Programming</li>
-        <li>Spring</li>
-        <li>Spring Data</li>
-        <li>Much more...</li>
-      </ul>
-    </h4>
-    <hr>
+    <div class="jumbotron container-fluid col-md-8">
+        <h1><strong>Welcome<br>
+          to <em>Dozo</em></strong></h1> 
+        <h2>Dozo is a data-driven
+          <br>productivity & goal-targeting tool
+          <br>created to aid you in your journey
+          <br>to becoming a self-sufficient developer.
+        </h2>
+        <h2>Dozo can help you optimize
+          <br>your progress as developer by:</h2>
+        <h3>
+        <ul>
+          <li>Tracking and timing your work efficiency</li>
+          <li>Promoting a continuous flow of uninterrupted work</li>
+          <li>Quantifying your growth via a built-in points system</li>
+          <li>Much more...</li>
+        </ul>
+        </h3>
+      </div>
+    
+      <p>&nbsp;</p>
+      
+      <div class=col-md-4>
+        {% load i18n widget_tweaks %}
+        <form method=post action="{% url 'login' %}" class="form">
+        {% csrf_token %}
+        <h1>Login to <em>Dozo</em></h1>
+        <p style="color: red">Uh oh! Your information could not be verified.
+          <br>Please check your information and try again.</p>
+        {% for field in form %}
+            <p>
+            <small>{{ field.label_tag }}</small> <small class=text-muted>{{ field.help_text }}</small>
+            {{ field|attr:"class:form-control input-sm"}}
+            </p>
+        {% endfor %}
+        <br>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+        
+</div>
+</div>
+
+<div class=row>
+    {% if user.is_authenticated %}
+    <div class="col-md-12">
+    <small><span class="badge">{{online_users|length}}</span> users currently online</small>
+    </div>
     {% endif %}
+</div>
 
-  
-{% endblock %}
+<div class=row>&nbsp;</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>

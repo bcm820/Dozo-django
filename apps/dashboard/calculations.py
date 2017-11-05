@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 # Import models from Django
 from django.db import models
 from models import Assignment, Session
+from ..newsfeed.models import Scorecard
 
 # Import time ops
 from datetime import timedelta
@@ -72,9 +73,50 @@ def actual_points(user):
     # if session completed under 8 hours, apply queue multiplier
     queue = user.assignments.filter(status='c')
     if len(queue) == 0:
-        actual_points *= done_lane.count()    
+        actual_points *= done_lane.count()
     
     # Add points to current scores and save
     session = user.sessions.last()
     session.actual = actual_points
     session.save()
+
+
+
+# scorecard totals
+def calc_scorecard(user):
+
+    # create scorecard if none found; query user's scorecard
+    if Scorecard.objects.filter(user=user).count() == 0:
+        Scorecard.objects.create(user=user)
+    scorecard = Scorecard.objects.get(user=user)
+
+    # store user's session and assignment data
+    sessions = user.sessions.all()
+    assignments = user.assignments.filter(status='f')
+    s_ontime = sessions.filter(on_time=True)
+    a_ontime = user.assignments.filter(status='f', on_time=True)
+    
+    # update total score, total duration
+    # and max assignments in a session
+    score = 0
+    max = 0
+    duration = timedelta()
+    for session in sessions:
+        score += session.actual
+        duration += session.act_duration
+        if session.assignments.count() > max:
+            max = session.assignments.count()
+    scorecard.score = score
+    scorecard.duration = duration
+    scorecard.max_assignments = max
+
+    # update total sessions and assignments
+    scorecard.assignments = assignments.count()
+    scorecard.sessions = sessions.count()
+
+    # update total sessions and assignments on time
+    scorecard.sessions_ontime = s_ontime.count()
+    scorecard.assignments_ontime = a_ontime.count()
+
+    # save
+    scorecard.save()

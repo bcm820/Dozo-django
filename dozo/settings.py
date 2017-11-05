@@ -48,9 +48,10 @@ SECRET_KEY = find_or_create_secret_key()
 
 
 # SESSION SETTINGS FOR HTTPS
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600 * 12 # 12hrs
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
-# SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -72,6 +73,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INSTALLED_APPS = [
     'apps.landing',
     'apps.dashboard',
+    'apps.newsfeed',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',

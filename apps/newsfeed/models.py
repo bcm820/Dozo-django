@@ -8,25 +8,23 @@ from datetime import timedelta
 
 
 class Scorecard(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    total_score = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    total_assignments = models.IntegerField()
-    total_sessions = models.IntegerField()
-    total_sessions_ontime = models.IntegerField()
-    total_duration = models.DurationField(default=timedelta())
-    avg_session_score = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    most_assignments = models.IntegerField()
-    avg_assignments_per = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    avg_assignments_ontime = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    avg_duration = models.DurationField(default=timedelta())
+    user = models.OneToOneField(User, related_name="scorecard", on_delete=models.CASCADE)
+    score = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    duration = models.DurationField(default=timedelta())
+    sessions = models.IntegerField(default=0)
+    assignments = models.IntegerField(default=0)
+    sessions_ontime = models.IntegerField(default=0)
+    assignments_ontime = models.IntegerField(default=0)
+    max_assignments = models.IntegerField(default=0)
+    # most assignments finished in a session
 
 
 class Event(models.Model):
 
     TYPE = (
-        ('s_start', 'Started Session'), # say how many assignments, point potential
-        ('a_finish', 'Finished Assignment'), # say which, whether on time, how many pts
-        ('s_end', 'Finished Session'), # whether on time, how many points
+        ('s_start', 'Started Session'), # assignment amt, point potential
+        ('a_finish', 'Finished Assignment'), # title, on time, pts earned
+        ('s_end', 'Finished Session'), # whether on time, pts total
     )
 
     user = models.ForeignKey(User, related_name="events", on_delete=models.CASCADE)
