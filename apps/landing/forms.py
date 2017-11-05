@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from .models import User
+from ..newsfeed.models import Scorecard
 
 
 # Join Dozo
@@ -39,4 +40,6 @@ class CreateUser(forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
+            # Add scorecard to new user
+            Scorecard.objects.create(user=user)
         return user

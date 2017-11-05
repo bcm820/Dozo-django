@@ -222,10 +222,14 @@ def go(request):
             done.act_duration = timedelta(minutes=1)
         done.save()
 
-        # record session end time (update each assignment)
-        # update on-time bool
+        # record session end time
+        # get session duration from assignments
+        # (to account for 1 minute rule)
         session.end = timezone.now()
         session.act_duration = session.end - session.start
+        amt = session.assignments.count()
+        if session.act_duration < timedelta(minutes=amt)
+            session.act_duration = timedelta(minutes=amt)
         if session.act_duration < session.time_challenge:
             session.on_time = True
         session.save()
