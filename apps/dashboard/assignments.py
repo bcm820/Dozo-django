@@ -591,26 +591,21 @@ def javaspringdata(user):
 
     Assignment.objects.create(
         user=user, track='javaspringdata', pageid='javaspringdata4',
-        title = "Lookify", base_points = 4,
-        est_duration=timedelta(hours=3), time_mult = 4)
-
-    Assignment.objects.create(
-        user=user, track='javaspringdata', pageid='javaspringdata5',
         title = "Driver's License", base_points = 3,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
-        user=user, track='javaspringdata', pageid='javaspringdata6',
+        user=user, track='javaspringdata', pageid='javaspringdata5',
         title = "Dojo and Ninjas", base_points = 3,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
-        user=user, track='javaspringdata', pageid='javaspringdata7',
+        user=user, track='javaspringdata', pageid='javaspringdata6',
         title = "Products and Categories", base_points = 3,
         est_duration=timedelta(hours=1), time_mult = 2)
 
     Assignment.objects.create(
-        user=user, track='javaspringdata', pageid='javaspringdata8',
+        user=user, track='javaspringdata', pageid='javaspringdata7',
         title = "DojoOverflow", base_points = 4,
         est_duration=timedelta(hours=4), time_mult = 4)
 
