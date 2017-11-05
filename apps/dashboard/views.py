@@ -227,9 +227,8 @@ def go(request):
         # (to account for 1 minute rule)
         session.end = timezone.now()
         session.act_duration = session.end - session.start
-        amt = done.count()
-        if session.act_duration < timedelta(minutes=amt)
-            session.act_duration = timedelta(minutes=amt)
+        if session.act_duration < timedelta(minutes=done.count()):
+            session.act_duration = timedelta(minutes=done.count())
         if session.act_duration < session.time_challenge:
             session.on_time = True
         session.save()

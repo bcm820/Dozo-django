@@ -55,9 +55,9 @@ SESSION_COOKIE_AGE = 3600 * 12 # 12hrs
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['54.147.131.4']
+ALLOWED_HOSTS = ['54.147.131.4','localhost']
 
 AUTH_USER_MODEL = 'landing.User'
 
