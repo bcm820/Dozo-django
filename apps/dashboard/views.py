@@ -218,8 +218,8 @@ def go(request):
         done.act_duration = done.end_time - done.start_time
         if done.act_duration < done.est_duration:
             done.on_time = True # update on_time bool
-        if done.act_duration < timedelta(minutes=1):
-            done.act_duration = timedelta(minutes=1)
+        if done.act_duration < timedelta(minutes=5):
+            done.act_duration = timedelta(minutes=5)
         done.save()
 
         # record session end time
@@ -227,8 +227,9 @@ def go(request):
         # (to account for 1 minute rule)
         session.end = timezone.now()
         session.act_duration = session.end - session.start
-        if session.act_duration < timedelta(minutes=done.count()):
-            session.act_duration = timedelta(minutes=done.count())
+        dones = request.user.assignments.filter(status='d')
+        if session.act_duration < timedelta(minutes=dones.count() * 5):
+            session.act_duration = timedelta(minutes=dones.count() * 5)
         if session.act_duration < session.time_challenge:
             session.on_time = True
         session.save()
