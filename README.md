@@ -1,7 +1,5 @@
 ### Dozo
 Dozo is a data-driven productivity & goal-targeting tool created to help working professionals and students improve work efficiency by habituating a continuous flow of uninterrupted, focused work.
-It was originally built for members of Coding Dojo DC.
-**Features include:**
 > - Plan a work session with time estimates for each task
 > - Track the completion of each task with instantaneous feedback on how long it took
 > - Measure growth alongside of other platform users via a quantifiable points system
