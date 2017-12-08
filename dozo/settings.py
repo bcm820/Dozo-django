@@ -49,7 +49,6 @@ SECRET_KEY = find_or_create_secret_key()
 
 # SESSION SETTINGS FOR HTTPS
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 3600 * 12 # 12hrs
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
 
@@ -57,7 +56,7 @@ SESSION_COOKIE_AGE = 3600 * 12 # 12hrs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','dozo.ninja']
 
 AUTH_USER_MODEL = 'landing.User'
 
@@ -129,10 +128,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'dozodb',
-        'USER': 'admin',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+	'USER': 'admin',
+#	'PASSWORD': '',
+#	'HOST': '',
+#	'PORT': '',
     }
 }
 
